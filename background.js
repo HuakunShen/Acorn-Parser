@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {
   console.log('hello from background');
-  chrome.storage.sync.set({ course_table: [], avg_mark: 0, parsed: false }, () => {
+  chrome.storage.sync.set({ course_table: [], parsed: false }, () => {
     console.log('course_table set');
   });
 });

@@ -3,31 +3,25 @@
   <head>
     <link rel="stylesheet" href="./bootstrap.min.css" />
     <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="./datatables.min.css" />
   </head>
   <body>
     <div class="container mb-3">
       <h1>Acorn Acedemic History Parser</h1>
       <div>
         <button id="parse-btn" class="btn btn-primary">Parse</button>
+        <button id="go-complete-btn" class="btn btn-primary">Go To Complete History</button>
         <button id="download-json-btn" class="btn btn-primary">Download Json</button>
-        <table class="table">
-          <tbody>
-            <tr>
-              <th scope="row">Parsed</th>
-              <td id="parsed-indicator">False</td>
-            </tr>
-            <tr id="avg-mark-row">
-              <th scope="row">Average Mark</th>
-              <td id="avg-mark-value">0</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
+      <table id="general-info-table" class="display" width="100%"></table>
+      <table id="dept-avg-table" class="display" width="100%"></table>
     </div>
 
     <script src="./jquery-3.6.0.min.js"></script>
+    <script src="./datatables.min.js"></script>
+
     <!-- <script src="./bootstrap.bundle.min.js"></script> -->
     <script src="./utils.js"></script>
-    <script src="popup.js"></script>
+    <script src="./popup.js"></script>
   </body>
 </html>

@@ -29,9 +29,29 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
       const res = parse_tables();
       sendResponse(res);
       break;
+    case 'click_complete':
+      go_to_complete_history();
+      break;
+    case 'check_if_in_complete':
+      sendResponse(is_in_complete_history());
+      break;
     default:
   }
 });
+
+const is_in_complete_history = () => {
+  const is_complete_history = $('.history-academic-complete').length === 1;
+  const is_recent_history = $('.academic-history-recent').length === 1;
+  return is_complete_history;
+};
+
+const go_to_complete_history = () => {
+  const is_complete_history = $('.history-academic-complete').length === 1;
+  const is_recent_history = $('.academic-history-recent').length === 1;
+  if (is_recent_history && !is_complete_history) {
+    document.querySelector('[data-ng-click="$ctrl.getComplete()"').click();
+  }
+};
 
 const parse_tables = () => {
   const is_recent_history = $('.academic-history-recent').length === 1;

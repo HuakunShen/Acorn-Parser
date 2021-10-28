@@ -16,45 +16,130 @@ const download_file = () => {
   });
 };
 
-const calculate_course_average = () => {
-  chrome.storage.sync.get(['course_table'], function (result) {});
-};
-
-const parseTable = (res) => {
-  log(res);
+const parseTableCallback = (res) => {
   if (res.success) {
-    log(res.data);
-    const flat_table = res.data.flat();
-    const valid_courses = get_valid_courses(flat_table);
-    log(valid_courses);
-    const avg_mark = get_avg_mark(valid_courses).toFixed(2);
-    log(`avg_mark: ${avg_mark}`);
-    // $('#avg-mark-value').val(avg_mark);
-    chrome.storage.sync.set({ course_table: flat_table, avg_mark: avg_mark, parsed: true }, () => {
-      log('course_table saved');
-      $('#avg-mark-value').text(avg_mark);
-      $('#parsed-indicator').text('true');
-      $('#download-json-btn').show();
+    chrome.storage.sync.set({ course_table: res.data, parsed: true }, () => {
+      update_general_info_table();
+      update_avg_by_department_table();
+      update_buttons();
     });
   } else {
     log(res.message);
   }
 };
 
-const send_parse_signal = () => {
+const update_buttons = () => {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, 'parse', parseTable);
+    chrome.tabs.sendMessage(tabs[0].id, 'check_if_in_complete', (res) => {
+      if (res) {
+        $('#go-complete-btn').hide();
+        $('#parse-btn').show();
+      } else {
+        $('#go-complete-btn').show();
+        $('#parse-btn').hide();
+      }
+    });
+    chrome.storage.sync.get(['parsed'], (result) => {
+      result['parsed'] === true ? $('#download-json-btn').show() : $('#download-json-btn').hide();
+    });
   });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  //   send_parse_signal();
-  $('#download-json-btn').hide();
+const get_general_info_table_dataset = () => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(['parsed', 'course_table'], (result) => {
+      const dataset = [['Parsed', result.parsed]];
+      log(result);
+      log(result.course_table);
+      const course_table = result.course_table;
+      if (result.parsed) {
+        const flat_table = course_table.flat();
+        const valid_courses = get_valid_courses(flat_table);
+        const avg_mark = get_avg_mark(valid_courses).toFixed(2);
+        log(`avg mark: ${avg_mark}`);
+        const avg_gpa = get_avg_gpa(valid_courses).toFixed(2);
+        log(`avg gpa: ${avg_gpa}`);
+        dataset.push(['Average Mark', avg_mark]);
+        dataset.push(['Average GPA', avg_gpa]);
+      }
+      resolve(dataset);
+    });
+  });
+};
+
+const update_general_info_table = async () => {
+  const dataset = await get_general_info_table_dataset();
+  const datatable = $('#general-info-table').DataTable();
+  datatable.clear();
+  datatable.rows.add(dataset);
+  datatable.draw();
+};
+
+const update_avg_by_department_table = async () => {
+  log('update_avg_by_department_table');
+  const dataset = await get_avg_by_department_table_dataset();
+  log(dataset);
+  const datatable = $('#dept-avg-table').DataTable();
+  datatable.clear();
+  datatable.rows.add(dataset);
+  datatable.draw();
+};
+
+const get_avg_by_department_table_dataset = () => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(['parsed', 'course_table'], (result) => {
+      const course_table = result.course_table;
+      if (result.parsed) {
+        const flat_table = course_table.flat();
+        const valid_courses = get_valid_courses(flat_table);
+        const res = avg_by_department(valid_courses);
+        const dataset = [];
+        for (const [dept, data] of Object.entries(res)) {
+          dataset.push([dept, data.avg_mark.toFixed(2), data.avg_gpa.toFixed(2)]);
+        }
+        resolve(dataset);
+      }
+    });
+  });
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+  update_buttons();
+
   $('#parse-btn').click(() => {
-    send_parse_signal();
+    chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, 'parse', parseTableCallback);
+    });
   });
 
+  $('#go-complete-btn').click(() => {
+    chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, 'click_complete');
+      update_buttons();
+    });
+  });
   $('#download-json-btn').click(() => {
     download_file();
+  });
+  const dataset = await get_general_info_table_dataset();
+  $(document).ready(function () {
+    $('#general-info-table').DataTable({
+      data: dataset,
+      searching: false,
+      paging: false,
+      ordering: false,
+      info: false,
+      columns: [{ title: 'Key' }, { title: 'Value' }],
+    });
+    const dataset_by_dept = get_avg_by_department_table_dataset();
+    log(dataset_by_dept);
+    $('#dept-avg-table').DataTable({
+      data: dataset_by_dept,
+      searching: false,
+      paging: false,
+      ordering: false,
+      info: false,
+      columns: [{ title: 'Dept.' }, { title: 'Avg. Mark' }, { title: 'Avg. GPA' }],
+    });
   });
 });

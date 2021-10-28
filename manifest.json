@@ -1,6 +1,6 @@
 {
-  "name": "Acorn Acedemic History Extension",
-  "description": "Build an Extension!",
+  "name": "Acorn Acedemic History Parser",
+  "description": "A convenient Chrome Extension for parsing and calculating your GPA and other information.",
   "version": "1.0",
   "manifest_version": 3,
   "content_scripts": [
