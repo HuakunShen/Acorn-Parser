@@ -5,16 +5,7 @@ const log = (message) => {
   });
 };
 
-log('from content.js');
-
-const academic_history_columns = [
-  'course_code',
-  'title',
-  'weight',
-  'mark',
-  'grade',
-  'course_avg',
-];
+const academic_history_columns = ['course_code', 'title', 'weight', 'mark', 'grade', 'course_avg'];
 
 const get_column_header_info = (header_str) => {
   const col_names = header_str
@@ -25,10 +16,8 @@ const get_column_header_info = (header_str) => {
   return { col_names, col_indices };
 };
 
-const is_recent_history =
-  document.getElementsByClassName('academic-history-recent').length === 1;
-const is_complete_history =
-  document.getElementsByClassName('history-academic-complete').length === 1;
+const is_recent_history = $('.academic-history-recent').length === 1;
+const is_complete_history = $('.history-academic-complete').length === 1;
 
 if (is_recent_history) {
   const tables = $('[data-ng-repeat="session in $ctrl.data.academicData"]');
@@ -50,9 +39,7 @@ if (is_recent_history) {
         col_list.push(val);
       }
       // get the last coumn value
-      const last_col_val = row_str
-        .substring(header_info.col_indices[-1])
-        .trim();
+      const last_col_val = row_str.substring(header_info.col_indices[-1]).trim();
       // decide whether the last column has multiple value, such as EXT
       const last_col_split = last_col_val.split('  ');
       if (last_col_split.length == 1) {
