@@ -3,12 +3,16 @@
   "description": "Build an Extension!",
   "version": "1.0",
   "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["https://acorn.utoronto.ca/sws/#/history/academic"],
+      "js": ["content.js"]
+    }
+  ],
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html"
-  },
-  "options_page": "options.html"
+  }
 }

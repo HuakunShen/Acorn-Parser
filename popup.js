@@ -32,5 +32,11 @@
 // parse_btn.addEventListener('click', () => {
 //   console.log(parse_btn);
 // });
-
-console.log('hello world');
+document.addEventListener('DOMContentLoaded', () => {
+  log('hi from popup.js');
+  const parse_btn = $('#parse-btn');
+  parse_btn.click(() => {
+    $('#download-csv-btn').toggle();
+    log('parse_btn clicked');
+  });
+});

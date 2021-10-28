@@ -1,0 +1,21 @@
+{
+  "name": "Acorn Acedemic History Extension",
+  "description": "Build an Extension!",
+  "version": "1.0",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      // "matches": ["http://acorn.utoronto.ca/*"],
+      "js": ["content.js"]
+    }
+  ]
+  //   "background": {
+  //     "service_worker": "background.js"
+  //   },
+  //   "permissions": ["storage", "activeTab", "scripting"],
+  //   "action": {
+  //     "default_popup": "popup.html"
+  //   },
+  //   "options_page": "options.html"
+}
