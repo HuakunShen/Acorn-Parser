@@ -45,7 +45,6 @@ const parse_tables = () => {
       message: 'This is recent academic history, I parse only complete academic history.',
       data: tables,
     };
-    return tables;
   } else if (is_complete_history) {
     const header_str = $('.coursesHeader.pre-elem')[0].innerText;
     const header_info = get_column_header_info(header_str);
@@ -104,4 +103,9 @@ const parse_tables = () => {
       data: null,
     };
   }
+  return {
+    success: false,
+    message: 'No Academic History Found, please go to the correct web page and click parse.',
+    data: null,
+  };
 };
