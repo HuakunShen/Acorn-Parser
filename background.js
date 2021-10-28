@@ -1,5 +1,8 @@
 chrome.runtime.onInstalled.addListener(() => {
   console.log('hello from background');
+  chrome.storage.sync.set({ course_table: [] }, () => {
+    console.log('course_table set');
+  });
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, reply) {

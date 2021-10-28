@@ -12,7 +12,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["webRequest", "downloads"],
+  "permissions": ["webRequest", "downloads", "storage"],
   "host_permissions": ["https://acorn.utoronto.ca/sws/rest/history/academic/complete"],
   "action": {
     "default_popup": "popup.html"
