@@ -15,13 +15,3 @@ chrome.runtime.onMessage.addListener(function (message, sender, reply) {
       console.error(message.message);
   }
 });
-
-chrome.webRequest.onCompleted.addListener(
-  function (details) {
-    console.log(details);
-    console.log('on completed request bg');
-    // return { cancel: true };
-  },
-  { urls: ['https://acorn.utoronto.ca/sws/rest/history/academic/complete'] },
-  ['responseHeaders']
-);
