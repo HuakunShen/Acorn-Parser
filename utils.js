@@ -80,7 +80,14 @@ const avg_by_department = (courses) => {
     result[dept] = {
       avg_mark: d.mark_sum / d.weight_sum,
       avg_gpa: d.gpa_sum / d.weight_sum,
+      total_credit: d.weight_sum,
     };
   }
   return result;
+};
+
+const get_total_credit = (courses) => {
+  let _courses = courses.filter((course) => course.grade !== 'IPR');
+  const weights = _courses.map((course) => parseFloat(course.weight));
+  return weights.reduce((a, b) => a + b);
 };

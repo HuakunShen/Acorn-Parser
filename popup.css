@@ -1,3 +1,6 @@
+body {
+  width: 50em;
+}
 .container {
-  width: 40em;
+  width: 100%;
 }

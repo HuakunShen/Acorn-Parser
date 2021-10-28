@@ -1,8 +1,6 @@
 const academic_history_columns = ['course_code', 'title', 'weight', 'mark', 'grade', 'course_avg'];
 
 const download_file = () => {
-  log('download file');
-
   chrome.storage.sync.get(['course_table'], function (result) {
     const json_file = URL.createObjectURL(
       new Blob([JSON.stringify({ courses: result }, null, 2)], { type: 'application/json' })
@@ -49,8 +47,6 @@ const get_general_info_table_dataset = () => {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(['parsed', 'course_table'], (result) => {
       const dataset = [['Parsed', result.parsed]];
-      log(result);
-      log(result.course_table);
       const course_table = result.course_table;
       if (result.parsed) {
         const flat_table = course_table.flat();
@@ -61,6 +57,7 @@ const get_general_info_table_dataset = () => {
         log(`avg gpa: ${avg_gpa}`);
         dataset.push(['Average Mark', avg_mark]);
         dataset.push(['Average GPA', avg_gpa]);
+        dataset.push(['Total Credit So Far', get_total_credit(valid_courses)]);
       }
       resolve(dataset);
     });
@@ -76,9 +73,7 @@ const update_general_info_table = async () => {
 };
 
 const update_avg_by_department_table = async () => {
-  log('update_avg_by_department_table');
   const dataset = await get_avg_by_department_table_dataset();
-  log(dataset);
   const datatable = $('#dept-avg-table').DataTable();
   datatable.clear();
   datatable.rows.add(dataset);
@@ -89,16 +84,21 @@ const get_avg_by_department_table_dataset = () => {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(['parsed', 'course_table'], (result) => {
       const course_table = result.course_table;
+      const dataset = [];
       if (result.parsed) {
         const flat_table = course_table.flat();
         const valid_courses = get_valid_courses(flat_table);
         const res = avg_by_department(valid_courses);
-        const dataset = [];
         for (const [dept, data] of Object.entries(res)) {
-          dataset.push([dept, data.avg_mark.toFixed(2), data.avg_gpa.toFixed(2)]);
+          dataset.push([
+            dept,
+            data.avg_mark.toFixed(2),
+            data.avg_gpa.toFixed(2),
+            data.total_credit,
+          ]);
         }
-        resolve(dataset);
       }
+      resolve(dataset);
     });
   });
 };
@@ -121,25 +121,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('#download-json-btn').click(() => {
     download_file();
   });
-  const dataset = await get_general_info_table_dataset();
-  $(document).ready(function () {
-    $('#general-info-table').DataTable({
-      data: dataset,
-      searching: false,
-      paging: false,
-      ordering: false,
-      info: false,
-      columns: [{ title: 'Key' }, { title: 'Value' }],
+  $(document).ready(() => {
+    get_general_info_table_dataset().then((dataset) => {
+      $('#general-info-table').DataTable({
+        data: dataset,
+        searching: false,
+        paging: false,
+        ordering: false,
+        info: false,
+        columns: [{ title: 'Key' }, { title: 'Value' }],
+      });
     });
-    const dataset_by_dept = get_avg_by_department_table_dataset();
-    log(dataset_by_dept);
-    $('#dept-avg-table').DataTable({
-      data: dataset_by_dept,
-      searching: false,
-      paging: false,
-      ordering: false,
-      info: false,
-      columns: [{ title: 'Dept.' }, { title: 'Avg. Mark' }, { title: 'Avg. GPA' }],
+    get_avg_by_department_table_dataset().then((dataset) => {
+      $('#dept-avg-table').DataTable({
+        data: dataset,
+        searching: false,
+        paging: false,
+        ordering: false,
+        info: false,
+        columns: [
+          { title: 'Dept.' },
+          { title: 'Avg. Mark' },
+          { title: 'Avg. GPA' },
+          { title: 'Total Credit' },
+        ],
+      });
     });
   });
 });
