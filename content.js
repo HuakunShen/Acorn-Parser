@@ -1,10 +1,3 @@
-const log = (message) => {
-  chrome.runtime.sendMessage({
-    action: 'log',
-    message: message,
-  });
-};
-
 const academic_history_columns = ['course_code', 'title', 'weight', 'mark', 'grade', 'course_avg'];
 
 const get_column_header_info = (header_str) => {
@@ -96,7 +89,7 @@ const parse_tables = () => {
           // TODO: Handle this case, it may be a EXT or something else
           // may be ignore the extra stuff?
         } else {
-          log('last_col_val has more than 2 columns, case not handled');
+          console.log('last_col_val has more than 2 columns, case not handled');
         }
         row_list.push(col_list);
       });

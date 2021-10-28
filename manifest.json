@@ -5,7 +5,7 @@
   "manifest_version": 3,
   "content_scripts": [
     {
-      "matches": ["https://acorn.utoronto.ca/*"],
+      "matches": ["<all_urls>"],
       "js": ["jquery-3.6.0.min.js", "content.js"]
     }
   ],
@@ -15,7 +15,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["downloads", "storage"],
+  "permissions": ["downloads", "storage", "tabs"],
   "action": {
     "default_popup": "popup.html"
   }

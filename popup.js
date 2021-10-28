@@ -103,8 +103,16 @@ const get_avg_by_department_table_dataset = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   update_buttons();
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    log(tabs[0]);
+    log(tabs[0].url);
+    if (tabs[0].url !== 'https://acorn.utoronto.ca/sws/#/history/academic') {
+      chrome.tabs.create({ url: 'https://acorn.utoronto.ca/sws/#/history/academic' });
+      return;
+    }
+  });
 
   $('#parse-btn').click(() => {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
