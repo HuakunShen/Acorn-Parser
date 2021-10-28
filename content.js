@@ -16,44 +16,92 @@ const get_column_header_info = (header_str) => {
   return { col_names, col_indices };
 };
 
-const is_recent_history = $('.academic-history-recent').length === 1;
-const is_complete_history = $('.history-academic-complete').length === 1;
+// on complete history link clicked
+$('[data-ng-click="$ctrl.getComplete()"]').click(() => {
+  setTimeout(() => {
+    parse_tables();
+  }, 1000);
+});
 
-if (is_recent_history) {
-  const tables = $('[data-ng-repeat="session in $ctrl.data.academicData"]');
-  log(tables);
-} else if (is_complete_history) {
-  const header_str = $('.coursesHeader.pre-elem')[0].innerText;
-  const header_info = get_column_header_info(header_str);
-  const tables = $('.courses.blok.pre-elem'); // table here are in string format, need to be formated
-  $('.courses.blok.pre-elem').each((idx, ele) => {
-    const table_str = ele.innerText;
-    const table_str_list = table_str.split('\n');
-    const row_list = [];
-    table_str_list.forEach((row_str) => {
-      const col_list = [];
-      for (let i = 1; i < header_info.col_indices.length; i++) {
-        const val = row_str
-          .substring(header_info.col_indices[i - 1], header_info.col_indices[i])
-          .trim();
-        col_list.push(val);
+chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+  switch (req) {
+    case 'parse':
+      const res = parse_tables();
+      sendResponse(res);
+      break;
+    default:
+  }
+});
+
+const parse_tables = () => {
+  const is_recent_history = $('.academic-history-recent').length === 1;
+  const is_complete_history = $('.history-academic-complete').length === 1;
+
+  if (is_recent_history) {
+    const tables = $('[data-ng-repeat="session in $ctrl.data.academicData"]');
+    console.log(tables);
+    return {
+      success: false,
+      message: 'This is recent academic history, I parse only complete academic history.',
+      data: tables,
+    };
+    return tables;
+  } else if (is_complete_history) {
+    const header_str = $('.coursesHeader.pre-elem')[0].innerText;
+    const header_info = get_column_header_info(header_str);
+    const tables = $('.courses.blok.pre-elem'); // table here are in string format, need to be formated
+    const table_list = [];
+    $('.courses.blok.pre-elem').each((idx, ele) => {
+      const table_str = ele.innerText;
+      const table_str_list = table_str.split('\n');
+      if (table_str_list[table_str_list.length - 1].length == 0) {
+        table_str_list.pop();
       }
-      // get the last coumn value
-      const last_col_val = row_str.substring(header_info.col_indices[-1]).trim();
-      // decide whether the last column has multiple value, such as EXT
-      const last_col_split = last_col_val.split('  ');
-      if (last_col_split.length == 1) {
-        col_list.push(last_col_val);
-      } else if (last_col_split.length == 2) {
-        col_list.push(last_col_split[0].trim());
-        // TODO: Handle this case, it may be a EXT or something else
-        // may be ignore the extra stuff?
-      } else {
-        log('last_col_val has more than 2 columns, case not handled');
-      }
-      row_list.push(col_list);
+      const row_list = [];
+      table_str_list.forEach((row_str) => {
+        const col_list = [];
+        for (let i = 1; i < header_info.col_indices.length; i++) {
+          const val = row_str
+            .substring(header_info.col_indices[i - 1], header_info.col_indices[i])
+            .trim();
+          col_list.push(val);
+        }
+        // get the last coumn value
+        const last_col_val = row_str.substring(header_info.col_indices[-1]).trim();
+        // decide whether the last column has multiple value, such as EXT
+        const last_col_split = last_col_val.split('  ');
+        if (last_col_split.length == 1) {
+          col_list.push(last_col_val);
+        } else if (last_col_split.length == 2) {
+          col_list.push(last_col_split[0].trim());
+          // TODO: Handle this case, it may be a EXT or something else
+          // may be ignore the extra stuff?
+        } else {
+          log('last_col_val has more than 2 columns, case not handled');
+        }
+        row_list.push(col_list);
+      });
+      table_list.push(row_list);
     });
-  });
-} else {
-  log("case not handled, didn't detect what history this is.");
-}
+
+    const tables_obj = table_list.map((table) => {
+      return table.map((row) => {
+        return Object.fromEntries(
+          academic_history_columns.map((_, i) => [academic_history_columns[i], row[i]])
+        );
+      });
+    });
+
+    return {
+      success: true,
+      message: '',
+      data: tables_obj,
+    };
+  } else {
+    return {
+      success: false,
+      message: 'No Academic History Found, please go to the correct web page and click parse.',
+      data: null,
+    };
+  }
+};

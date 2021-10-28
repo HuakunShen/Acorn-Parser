@@ -1,42 +1,27 @@
-// // Initialize butotn with users's prefered color
-// let changeColor = document.getElementById('changeColor');
+const academic_history_columns = ['course_code', 'title', 'weight', 'mark', 'grade', 'course_avg'];
 
-// chrome.storage.sync.get('color', ({ color }) => {
-//   changeColor.style.backgroundColor = color;
-// });
+const parseTable = (res) => {
+  if (res.success) {
+    log(res.data);
+    const flat_table = res.data.flat();
+    let doc = URL.createObjectURL(
+      new Blob([JSON.stringify({ courses: flat_table }, null, 2)], { type: 'application/json' })
+    );
+    chrome.downloads.download({
+      url: doc,
+      filename: 'academic_history.json',
+      conflictAction: 'overwrite',
+      saveAs: true,
+    });
+  } else {
+    log(res.message);
+  }
+};
 
-// // When the button is clicked, inject setPageBackgroundColor into current page
-// changeColor.addEventListener('click', async () => {
-//   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-//   chrome.scripting.executeScript({
-//     target: { tabId: tab.id },
-//     function: setPageBackgroundColor,
-//   });
-// });
-
-// The body of this function will be execuetd as a content script inside the
-// current page
-// function setPageBackgroundColor() {
-//   chrome.storage.sync.get('color', ({ color }) => {
-//     document.body.style.backgroundColor = color;
-//   });
-// }
-
-// =================================================================================================
-// let parse_btn;
-// // let parse_btn = $('#parse-btn');
-// parse_btn = document.getElementById('parse-btn');
-// console.log(parse_btn);
-
-// parse_btn.addEventListener('click', () => {
-//   console.log(parse_btn);
-// });
 document.addEventListener('DOMContentLoaded', () => {
-  log('hi from popup.js');
-  const parse_btn = $('#parse-btn');
-  parse_btn.click(() => {
-    $('#download-csv-btn').toggle();
-    log('parse_btn clicked');
+  $('#parse-btn').click(() => {
+    chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, 'parse', parseTable);
+    });
   });
 });
