@@ -8,5 +8,5 @@
 
 # TODO
 
-[ ] Average score for each year/semester, plot trend as a graph.
-[ ] Plot trend for each department
+- Average score for each year/semester, plot trend as a graph.
+- Plot trend for each department
