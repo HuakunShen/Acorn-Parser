@@ -1,4 +1,11 @@
-const academic_history_columns = ['course_code', 'title', 'weight', 'mark', 'grade', 'course_avg'];
+const academic_history_columns = [
+  'course_code',
+  'title',
+  'weight',
+  'mark',
+  'grade',
+  'course_avg',
+];
 
 const get_column_header_info = (header_str) => {
   const col_names = header_str
@@ -55,7 +62,8 @@ const parse_tables = () => {
     console.log(tables);
     return {
       success: false,
-      message: 'This is recent academic history, I parse only complete academic history.',
+      message:
+        'This is recent academic history, I parse only complete academic history.',
       data: tables,
     };
   } else if (is_complete_history) {
@@ -64,6 +72,9 @@ const parse_tables = () => {
     const tables = $('.courses.blok.pre-elem'); // table here are in string format, need to be formated
     const table_list = [];
     $('.courses.blok.pre-elem').each((idx, ele) => {
+      const sessionGPA = ele.prev().prev();
+      const session = sessionGPA.prev();
+
       const table_str = ele.innerText;
       const table_str_list = table_str.split('\n');
       if (table_str_list[table_str_list.length - 1].length == 0) {
@@ -74,12 +85,17 @@ const parse_tables = () => {
         const col_list = [];
         for (let i = 1; i < header_info.col_indices.length; i++) {
           const val = row_str
-            .substring(header_info.col_indices[i - 1], header_info.col_indices[i])
+            .substring(
+              header_info.col_indices[i - 1],
+              header_info.col_indices[i]
+            )
             .trim();
           col_list.push(val);
         }
         // get the last coumn value
-        const last_col_val = row_str.substring(header_info.col_indices[-1]).trim();
+        const last_col_val = row_str
+          .substring(header_info.col_indices[-1])
+          .trim();
         // decide whether the last column has multiple value, such as EXT
         const last_col_split = last_col_val.split('  ');
         if (last_col_split.length == 1) {
@@ -99,7 +115,10 @@ const parse_tables = () => {
     const tables_obj = table_list.map((table) => {
       return table.map((row) => {
         return Object.fromEntries(
-          academic_history_columns.map((_, i) => [academic_history_columns[i], row[i]])
+          academic_history_columns.map((_, i) => [
+            academic_history_columns[i],
+            row[i],
+          ])
         );
       });
     });
@@ -112,13 +131,15 @@ const parse_tables = () => {
   } else {
     return {
       success: false,
-      message: 'No Academic History Found, please go to the correct web page and click parse.',
+      message:
+        'No Academic History Found, please go to the correct web page and click parse.',
       data: null,
     };
   }
   return {
     success: false,
-    message: 'No Academic History Found, please go to the correct web page and click parse.',
+    message:
+      'No Academic History Found, please go to the correct web page and click parse.',
     data: null,
   };
 };

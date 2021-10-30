@@ -39,6 +39,11 @@ type courseObject = {
   opt: string;
 };
 type coursesType = courseObject[];
+type sessionType = {
+  courses: coursesType;
+  year: number;
+  season: string;
+};
 
 const objsToArrays = (table: coursesType) => {
   const col_names = Object.keys(table[0]);
@@ -70,7 +75,11 @@ const get_column_header_info = (header_str) => {
   return { col_names, col_indices };
 };
 
-const tableStr2TableObj = (table_str: string): coursesType => {
+const tableStr2TableObj = (
+  table_str: string,
+  sessionStr: string,
+  gpaStr: string
+): sessionType => {
   const table_rows = table_str.split('\n');
 
   // Column 2, title, can have multiple lines, need to merge the lines into a single line
@@ -123,13 +132,36 @@ const tableStr2TableObj = (table_str: string): coursesType => {
     new_col_list.push(opt);
     new_row_list.push(new_col_list);
   }
-  log(new_row_list);
-  return arraysToObjs(headers, new_row_list);
+  const courses = arraysToObjs(headers, new_row_list);
+  let [year, season] = sessionStr.split('-')[0].trim().split(' ');
+  const lst = gpaStr
+    .split('  ')
+    .map((x) => x.trim())
+    .filter((x) => x.length !== 0);
+  const gpaObj = {};
+  let i = 0;
+  while (i < lst.length) {
+    if (lst[i].includes('GPA') && i !== lst.length) {
+      gpaObj[lst[i]] = lst[i + 1];
+    } else if (lst[i].includes('Status:')) {
+      gpaObj['status'] = lst[i].split(':')[1].trim();
+    } else {
+      log('ERROR: not handled');
+    }
+    i++;
+  }
+  return { courses, year: parseInt(year), season, ...gpaObj };
 };
 
 const header_info = get_column_header_info(header_str);
 const col_indices = header_info.col_indices;
-let table_str = table2;
-const table_obj = tableStr2TableObj(table_str);
-log(table_obj);
-log(objsToArrays(table_obj));
+const tables = [table1, table2, table3, table4];
+const table_objs = tables.map((table_str) =>
+  tableStr2TableObj(
+    table_str,
+    '2017 Fall - 1st Year Studies in Computer Science - University College      ',
+    'Sessional GPA   2.95  Annual GPA      3.09  Cumulative GPA  3.09            Status: In good standing     '
+  )
+);
+log(table_objs);
+// log(objsToArrays(table_obj));
