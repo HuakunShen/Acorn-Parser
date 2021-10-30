@@ -1,9 +1,18 @@
-const academic_history_columns = ['course_code', 'title', 'weight', 'mark', 'grade', 'course_avg'];
+const academic_history_columns = [
+  'course_code',
+  'title',
+  'weight',
+  'mark',
+  'grade',
+  'course_avg',
+];
 
 const download_file = () => {
   chrome.storage.sync.get(['course_table'], function (result) {
     const json_file = URL.createObjectURL(
-      new Blob([JSON.stringify({ courses: result }, null, 2)], { type: 'application/json' })
+      new Blob([JSON.stringify({ courses: result }, null, 2)], {
+        type: 'application/json',
+      })
     );
     chrome.downloads.download({
       url: json_file,
@@ -28,17 +37,27 @@ const parseTableCallback = (res) => {
 
 const update_buttons = () => {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, 'check_if_in_complete', (res) => {
-      if (res) {
-        $('#go-complete-btn').hide();
-        $('#parse-btn').show();
-      } else {
-        $('#go-complete-btn').show();
-        $('#parse-btn').hide();
-      }
-    });
+    if (tabs[0].url !== academic_history_url) {
+      $('#go-history-btn').show();
+      $('#parse-btn').hide();
+      $('#go-complete-btn').hide();
+    } else {
+      $('#go-history-btn').hide();
+      // on the page
+      chrome.tabs.sendMessage(tabs[0].id, 'check_if_in_complete', (res) => {
+        if (res) {
+          $('#go-complete-btn').hide();
+          $('#parse-btn').show();
+        } else {
+          $('#go-complete-btn').show();
+          $('#parse-btn').hide();
+        }
+      });
+    }
     chrome.storage.sync.get(['parsed'], (result) => {
-      result['parsed'] === true ? $('#download-json-btn').show() : $('#download-json-btn').hide();
+      result.parsed === true
+        ? $('#download-json-btn').show()
+        : $('#download-json-btn').hide();
     });
   });
 };
@@ -103,19 +122,29 @@ const get_avg_by_department_table_dataset = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  update_buttons();
+const go_to_history_page = () => {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    if (tabs[0].url !== 'https://acorn.utoronto.ca/sws/#/history/academic') {
-      chrome.tabs.create({ url: 'https://acorn.utoronto.ca/sws/#/history/academic' });
+    if (tabs[0].url !== academic_history_url) {
+      chrome.tabs.create({
+        url: academic_history_url,
+      });
       return;
     }
   });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  update_buttons();
 
   $('#parse-btn').click(() => {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, 'parse', parseTableCallback);
     });
+  });
+
+  $('#go-history-btn').click(() => {
+    log('go to page');
+    go_to_history_page();
   });
 
   $('#go-complete-btn').click(() => {

@@ -4,7 +4,7 @@ const log = (message) => {
     message: message,
   });
 };
-
+const academic_history_url = 'https://acorn.utoronto.ca/sws/#/history/academic';
 const GPA_MAP = {
   'A+': 4.0,
   A: 4.0,
