@@ -51,16 +51,15 @@ const objsToArrays = (table: coursesType) => {
   return { col_names, table: row_arr };
 };
 
-const arraysToObjs = (col_names, table): coursesType => {
+const arraysToObjs = (col_names: string[], table: coursesType): coursesType => {
   const obj_list: coursesType = [];
 
   for (const col_list of table) {
-    obj_list.push(
-      col_names.reduce((obj, col_name, idx) => {
-        obj[col_name] = col_list[idx];
-        return obj;
-      }, {})
-    );
+    let courseObj: courseObject;
+    for (let i = 0; i < col_names.length; i++) {
+      courseObj[col_names[i]] = col_list[i]
+    }
+    obj_list.push(courseObj);
   }
   return obj_list;
 };
@@ -164,4 +163,4 @@ const table_objs = tables.map((table_str) =>
   )
 );
 log(table_objs);
-// log(objsToArrays(table_obj));
+log(objsToArrays(table_objs[0].courses));
