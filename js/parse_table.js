@@ -1,3 +1,4 @@
+"use strict";
 const log = console.log;
 const header_str = `Crs Code  Title                                    Wgt  Mrk  Grd  CrsAvg   `;
 const table1 = `CSC148H1  Intro to Comp Sci                        0.50  83  A-     B      

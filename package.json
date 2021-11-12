@@ -22,7 +22,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
-    "start": "ts-node exp2.ts"
+    "start": "ts-node ./ts/parse_table.ts"
   },
   "repository": {
     "type": "git",

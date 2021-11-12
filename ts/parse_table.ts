@@ -29,21 +29,8 @@ const headers = [
   'courseAvg',
   'opt',
 ];
-type courseObject = {
-  courseCode: string;
-  title: string;
-  weight: string;
-  mark: string;
-  grade: string;
-  courseAvg: string;
-  opt: string;
-};
-type coursesType = courseObject[];
-type sessionType = {
-  courses: coursesType;
-  year: number;
-  season: string;
-};
+
+import { courseObject, coursesType, sessionType } from types;
 
 const objsToArrays = (table: coursesType) => {
   const col_names = Object.keys(table[0]);
@@ -57,7 +44,7 @@ const arraysToObjs = (col_names: string[], table: coursesType): coursesType => {
   for (const col_list of table) {
     let courseObj: courseObject;
     for (let i = 0; i < col_names.length; i++) {
-      courseObj[col_names[i]] = col_list[i]
+      courseObj[col_names[i]] = col_list[i];
     }
     obj_list.push(courseObj);
   }
@@ -67,19 +54,26 @@ const arraysToObjs = (col_names: string[], table: coursesType): coursesType => {
 const get_column_header_info = (header_str) => {
   const col_names = header_str
     .split('  ')
-    .map((col) => col.trim())
-    .filter((col) => col.length != 0);
-  const col_indices = col_names.map((col) => header_str.indexOf(col));
+    .map((col: string) => col.trim())
+    .filter((col: string) => col.length != 0);
+  const col_indices = col_names.map((col: string) => header_str.indexOf(col));
   col_indices.push(header_str.length);
   return { col_names, col_indices };
 };
 
+/**
+ * Convert Table string to a table object
+ * @param table_str Table string of a single semester
+ * @param sessionStr a string containing the info of a session
+ * @param gpaStr a GPA summary string above the table
+ * @returns
+ */
 const tableStr2TableObj = (
   table_str: string,
   sessionStr: string,
   gpaStr: string
 ): sessionType => {
-  const table_rows = table_str.split('\n');
+  const table_rows: string[] = table_str.split('\n');
 
   // Column 2, title, can have multiple lines, need to merge the lines into a single line
   const valid_row_idx: Array<number> = [];
@@ -89,10 +83,10 @@ const tableStr2TableObj = (
       valid_row_idx.push(index);
     }
   });
-
-  let row_list = [];
+  // row_list should contain a 2D array of strings, each cell is a cell of the table
+  let row_list: string[][] = [];
   for (const row of table_rows) {
-    const col_list = new Array();
+    const col_list: string[] = new Array();
     for (let i = 1; i < col_indices.length; i++) {
       const val = row.substring(col_indices[i - 1], col_indices[i]).trim();
       col_list.push(val);
@@ -116,7 +110,7 @@ const tableStr2TableObj = (
     prev_valid_row = valid_idx;
   }
   row_list = valid_row_idx.map((idx) => row_list[idx]);
-  const new_row_list = [];
+  const new_row_list: string[][] = [];
   for (const col_list of row_list) {
     const new_col_list = col_list.splice(0, col_list.length - 1);
     const last_col = col_list[col_list.length - 1];
