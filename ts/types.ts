@@ -14,28 +14,21 @@ export type sessionType = {
   season: string;
 };
 
-export class CourseHistory {
-  courseCode!: string;
-  title!: string;
-  weight!: string;
-  mark!: string;
-  grade!: string;
-  courseAvg!: string;
+// OOP Design
+import { calCoursesWeightSum } from './utils';
+
+export class Course {
+  courseCode: string = '';
+  title: string = '';
+  weight: number = 0;
+  mark: number = 0; // integer mark (percentage)
+  letterGrade: string = ''; // letter grade (GPA)
+  numberGrade: number = 0; // GPA
+  letterCourseAvg: string = ''; // letter grade (GPA)
+  numberCourseAvg: string = ''; // GPA
   opt!: string;
-  complete: boolean;
-  constructor() {
-    this.complete = false;
-  }
+  courseHdr!: string;
+  complete: boolean = false; // complete when letterGrade !== 'IPR' and have a value
 }
 
-export class SemesterHistory {
-  constructor() {}
-}
-export class AcademicHistory {
-  constructor() {}
-}
-
-const log = console.log;
-const course = new CourseHistory();
-course['courseCode'] = 'lla';
-log(course.courseCode);
+export type Courses = Course[];
