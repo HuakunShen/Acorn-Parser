@@ -30,7 +30,7 @@ const headers = [
   'opt',
 ];
 
-import { courseObject, coursesType, sessionType } from types;
+import { courseObject, coursesType, sessionType } from './types';
 
 const objsToArrays = (table: coursesType) => {
   const col_names = Object.keys(table[0]);
@@ -125,6 +125,7 @@ const tableStr2TableObj = (
     new_col_list.push(opt);
     new_row_list.push(new_col_list);
   }
+  // @ts-ignore
   const courses = arraysToObjs(headers, new_row_list);
   let [year, season] = sessionStr.split('-')[0].trim().split(' ');
   const lst = gpaStr

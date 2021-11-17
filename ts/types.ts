@@ -15,20 +15,20 @@ export type sessionType = {
 };
 
 // OOP Design
-import { calCoursesWeightSum } from './utils';
 
-export class Course {
-  courseCode: string = '';
-  title: string = '';
-  weight: number = 0;
-  mark: number = 0; // integer mark (percentage)
-  letterGrade: string = ''; // letter grade (GPA)
-  numberGrade: number = 0; // GPA
-  letterCourseAvg: string = ''; // letter grade (GPA)
-  numberCourseAvg: string = ''; // GPA
-  opt!: string;
-  courseHdr!: string;
-  complete: boolean = false; // complete when letterGrade !== 'IPR' and have a value
-}
-
+import { Course } from './lib';
 export type Courses = Course[];
+
+export type ColHeaderInfo = {
+  colNames: string[];
+  colIndices: number[];
+};
+// export type SessionGpaHdr = {
+//   'Sessional GPA'?: number;
+//   'Annual GPA'?: number;
+//   'Cumulative GPA '?: number;
+//   Status?: string;
+// };
+export type Letter2NumGpaMap = { [key: string]: number };
+export type Num2LetterGpaMap = { [key: string]: string }; // object keys must be string
+export type SessionGpaHdr = { [key: string]: string | number };
