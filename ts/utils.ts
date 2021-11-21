@@ -130,9 +130,9 @@ export const sessionTableStr2Obj = (
       for (let i = prevValidRow + 1; i < validIdx; i++) {
         // iterate columns
         const colList = rowList[i];
-        for (const [col_idx, col_content] of colList.entries()) {
-          rowList[prevValidRow][col_idx] += ` ${col_content}`;
-        }
+        // for (const [col_idx, col_content] of colList.entries()) {
+        //   rowList[prevValidRow][col_idx] += ` ${col_content}`;
+        // }
       }
     }
     prevValidRow = validIdx;
@@ -171,3 +171,4 @@ export const sessionTableStr2Obj = (
   );
   return new Semester(courses, sessionStr, gpaStr);
 };
+export const test = () => 'test';

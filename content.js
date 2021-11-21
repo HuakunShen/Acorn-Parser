@@ -6,7 +6,7 @@ const academic_history_columns = [
   'grade',
   'course_avg',
 ];
-
+log('hi');
 const get_column_header_info = (header_str) => {
   const col_names = header_str
     .split('  ')

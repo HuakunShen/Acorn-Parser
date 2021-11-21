@@ -15,3 +15,7 @@ log(
     colHeaderInfo
   )
 );
+
+export const main = () => {
+  console.log('main');
+};

@@ -1,11 +1,26 @@
+// {
+//   "compilerOptions": {
+//     "target": "ESNext",
+//     "module": "ESNext",
+//     "sourceMap": true,
+//     "strict": true,
+//     "outDir": "js",
+//     "lib": ["es5", "dom"]
+//   },
+//   "include": ["./ts/**.ts"],
+//   "exclude": ["node_modules", "**/*.spec.ts", "./ts/parse_table.ts"],
+//   "types": ["chrome", "jquery"]
+// }
+
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "sourceMap": true,
-    "strict": true,
-    "outDir": "js"
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node"
   },
-  "include": ["./ts/**.ts"],
   "exclude": ["node_modules", "**/*.spec.ts", "./ts/parse_table.ts"]
 }
