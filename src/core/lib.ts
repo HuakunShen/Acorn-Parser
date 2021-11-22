@@ -4,6 +4,7 @@ import {
   calAvgCoursesWeightedGPA,
   calAvgCoursesWeightedMark,
   error,
+  warn,
 } from './utils';
 import { Courses, SessionGpaHdr } from './types';
 
@@ -62,10 +63,11 @@ export class Semester {
     while (i < gpaStrList.length) {
       if (gpaStrList[i].includes('GPA') && i !== gpaStrList.length) {
         this.gpaSummary[gpaStrList[i]] = parseFloat(gpaStrList[i + 1]);
+        i++; // next value should be a GPA and is processed, skip the next
       } else if (gpaStrList[i].includes('Status:')) {
         this.gpaSummary.Status = gpaStrList[i].split(':')[1].trim();
       } else {
-        error('ERROR: not handled');
+        error(`ERROR: not handled, ${gpaStrList[i]}`);
       }
       i++;
     }

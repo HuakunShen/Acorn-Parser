@@ -1,8 +1,28 @@
-import { help } from './helper';
-import { letter2numberGpaMap, log, warn, error } from '../ts/utils';
-console.log('src/content.ts');
-help();
+import {
+  log,
+  getColumnHeaderInfo,
+  sessionTableStr2Obj,
+  warn,
+} from './core/utils';
+import {
+  sampleTables,
+  sampleGpaStr,
+  sampleSessionStr,
+  sampleHeaderStr,
+} from './core/sample_data';
 
-log(letter2numberGpaMap);
-warn(letter2numberGpaMap);
-error(letter2numberGpaMap);
+const colHeaderInfo = getColumnHeaderInfo(sampleHeaderStr);
+log(
+  sessionTableStr2Obj(
+    sampleTables[1],
+    sampleSessionStr,
+    sampleGpaStr,
+    colHeaderInfo
+  )
+);
+
+export const main = () => {
+  console.log('main');
+};
+
+warn('warning from content.ts');

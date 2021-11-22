@@ -1,26 +1,12 @@
-// {
-//   "compilerOptions": {
-//     "target": "ESNext",
-//     "module": "ESNext",
-//     "sourceMap": true,
-//     "strict": true,
-//     "outDir": "js",
-//     "lib": ["es5", "dom"]
-//   },
-//   "include": ["./ts/**.ts"],
-//   "exclude": ["node_modules", "**/*.spec.ts", "./ts/parse_table.ts"],
-//   "types": ["chrome", "jquery"]
-// }
-
 {
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
     "module": "es6",
-    "target": "es5",
+    "target": "es6",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node"
   },
-  "exclude": ["node_modules", "**/*.spec.ts", "./ts/parse_table.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

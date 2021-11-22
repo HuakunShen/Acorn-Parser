@@ -2,16 +2,18 @@
   "devDependencies": {
     "@types/chrome": "^0.0.164",
     "@types/jquery": "^3.5.8",
+    "parcel": "^2.0.1",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2",
     "webpack": "^5.64.2",
-    "webpack-cli": "^4.9.1"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.5.0"
   },
   "name": "Acorn Academic History Chrome Extension",
   "description": "## Functionalities",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "dist2/index.js",
   "directories": {
     "lib": "lib"
   },
@@ -39,5 +41,15 @@
   "bugs": {
     "url": "https://github.com/HuakunShen/Acorn-Academic-History-Chrome-Extension/issues"
   },
-  "homepage": "https://github.com/HuakunShen/Acorn-Academic-History-Chrome-Extension#readme"
+  "homepage": "https://github.com/HuakunShen/Acorn-Academic-History-Chrome-Extension#readme",
+  "targets": {
+    "content": {
+      "source": "src/content.ts",
+      "distDir": "./output"
+    },
+    "main": {
+      "source": "src/core/main.ts",
+      "distDir": "./output"
+    }
+  }
 }
