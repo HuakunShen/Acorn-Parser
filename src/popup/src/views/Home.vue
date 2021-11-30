@@ -1,24 +1,40 @@
 <template>
-  <div class="home">
-    <h1>Summary</h1>
-  </div>
+  <v-container>
+    <h2>Summary</h2>
+    <Summary />
+    <br />
+    <h2 v-on:click="click()">Department GPA</h2>
+    <DepartmentGPA />
+  </v-container>
 </template>
 
 <script lang="ts">
-// import { Options, Vue } from 'vue-class-component';
-// import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
-
-// @Options({
-//   components: {
-//     HelloWorld,
-//   },
-// })
-// export default class Home extends Vue {}
 import Vue from 'vue';
-export default {
-  mounted() {
-    // alert(document.getElementById('app')?.style.minWidth);
-    // alert(document.getElementById('huakun')?.style.minWidth);
+import Summary from '../components/Summary.vue';
+import DepartmentGPA from '../components/DepartmentGPA.vue';
+export default Vue.extend({
+  name: 'Home',
+
+  components: {
+    Summary,
+    DepartmentGPA,
   },
-};
+  methods: {
+    click: () => {
+      chrome.tabs.query(
+        { currentWindow: true, active: true },
+        (tabs: chrome.tabs.Tab[]) => {
+          if (tabs.length && tabs[0].id) {
+            chrome.tabs.sendMessage(tabs[0].id, 'parse', () => {
+              console.log('callback');
+            });
+          }
+        }
+      );
+    },
+  },
+  mounted() {
+    this.click();
+  },
+});
 </script>

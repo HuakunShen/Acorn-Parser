@@ -1,20 +1,25 @@
 <template>
-  <div id="popup">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-    <router-view />
-  </div>
+  <v-app>
+    <div id="popup">
+      <div id="nav">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/about">About</router-link>
+      </div>
+      <router-view />
+    </div>
+  </v-app>
 </template>
 
-<style>
+<script lang="ts">
+import Vue from 'vue';
+export default {};
+</script>
+
+<style lang="scss" scoped>
 #popup {
   min-width: 50rem;
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  min-height: 50rem;
+  border: 2px solid red;
   text-align: center;
-  color: #2c3e50;
 }
 </style>
