@@ -1,5 +1,8 @@
+// import { Semester, AcademicHistory } from './core/lib';
+// import { log, warn, error } from './core/utils';
+
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ course_table: [], parsed: false }, () => {});
+  chrome.storage.sync.set({ history: null, parsed: false }, () => {});
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, reply) {
