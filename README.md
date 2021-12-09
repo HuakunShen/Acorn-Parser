@@ -1,12 +1,24 @@
-# Acorn Academic History Parser
+# popup
 
-## Functionalities
+## Project setup
+```
+npm install
+```
 
-1. Parse academic history so that users can download a json format rather than only pdf format.
-2. Calculate Overall average GPA, overall average Mark, and total credit.
-3. Calculate average GPA and Mark for each department e.g. CSC, STA, ECO, etc.
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-# TODO
+### Compiles and minifies for production
+```
+npm run build
+```
 
-- Average score for each year/semester, plot trend as a graph.
-- Plot trend for each department
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

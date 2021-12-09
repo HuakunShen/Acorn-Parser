@@ -1,6 +1,0 @@
-{
-  "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
-  "watch": ["./src/core", "./src/content.ts", "./src/background.ts"],
-  "exec": "npm run dev",
-  "ext": "ts"
-}

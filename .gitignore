@@ -1,12 +1,3 @@
-node_modules/
-*.map
-.idea
-.DS_Store
-js/
-dist/
-.cache
-.parcel-cache
-
 .DS_Store
 node_modules
 /dist

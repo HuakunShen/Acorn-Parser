@@ -1,5 +1,5 @@
-import { log, getColumnHeaderInfo, sessionTableStr2Obj, warn } from './core/utils';
-import { sampleTables, sampleGpaStr, sampleSessionStr, sampleHeaderStr } from './core/sample_data';
+import { log, getColumnHeaderInfo, sessionTableStr2Obj } from './core/utils';
+// import { sampleTables, sampleGpaStr, sampleSessionStr, sampleHeaderStr } from './core/sample_data';
 import { Semester, AcademicHistory } from './core/lib';
 const is_in_complete_history = () => {
   const is_complete_history = $('.history-academic-complete').length === 1;
