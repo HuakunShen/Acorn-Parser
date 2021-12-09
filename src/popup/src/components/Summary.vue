@@ -8,7 +8,10 @@
   ></v-data-table>
 </template>
 
-<script>
+<script lang="js">
+// import { AcademicHistory } from '../../../core/lib';
+import { log } from '../utils/logger';
+
 export default {
   data() {
     return {
@@ -23,6 +26,11 @@ export default {
         },
       ],
     };
+  },
+  mounted: () => {
+    chrome.storage.sync.get(['history'], function (result) {
+      log(result);
+    });
   },
 };
 </script>
