@@ -1,9 +1,4 @@
-import {
-  Courses,
-  ColHeaderInfo,
-  Letter2NumGpaMap,
-  Num2LetterGpaMap,
-} from './types';
+import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
 import { Course, Semester } from './lib';
 
 export const log = console.log,
@@ -11,9 +6,7 @@ export const log = console.log,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses
-    .map((course: Course) => course.weight)
-    .reduce((a: number, b: number) => a + b, 0);
+  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -96,15 +89,14 @@ export const courseRowStr2CourseObj = (rowStr: string[]) => {
 
 export const sessionTableStr2Obj = (
   table_str: string,
-  sessionStr: string,
-  gpaStr: string,
+  sessionStr: string | null,
+  gpaStr: string | null,
   colHeaderInfo: ColHeaderInfo
 ): Semester => {
   const tableRows: string[] = table_str.split('\n'); // split table string
   const { colIndices } = colHeaderInfo;
   // Column 2, title, can have multiple lines, need to merge the lines into a single line
   const validRowIdx: Array<number> = [];
-  log(colHeaderInfo.colIndices[0]);
   tableRows.forEach((row, index) => {
     const first_col = row.substring(colIndices[0], colIndices[1]);
     if (first_col.trim().length !== 0) {
@@ -169,6 +161,9 @@ export const sessionTableStr2Obj = (
         false
       )
   );
-  return new Semester(courses, sessionStr, gpaStr);
+  return new Semester(
+    courses,
+    sessionStr === null ? '' : sessionStr,
+    gpaStr === null ? '' : gpaStr
+  );
 };
-export const test = () => 'test';

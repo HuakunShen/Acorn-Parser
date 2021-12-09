@@ -10,16 +10,10 @@
   </v-app>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
-export default {};
-</script>
-
 <style lang="scss" scoped>
 #popup {
   min-width: 50rem;
   min-height: 50rem;
-  border: 2px solid red;
   text-align: center;
 }
 </style>

@@ -37,6 +37,9 @@ export class Course {
     this.opt = opt;
     this.complete = complete;
   }
+  completed() {
+    return this.complete;
+  }
 }
 
 export class Semester {
@@ -84,13 +87,11 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(
-      this.courses.filter((course) => course.complete)
-    );
+    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
   }
 
   getCompletedCourses(): Courses {
-    return this.courses.filter((course: Course) => course.complete);
+    return this.courses.filter((course: Course) => course.completed());
   }
 
   getAvgNumberGPA(): number {
@@ -108,6 +109,10 @@ export class Semester {
 
 export class AcademicHistory {
   semesters: Semester[] = [];
+
+  constructor(semesters: Semester[]) {
+    this.semesters = semesters;
+  }
 
   /**
    * @returns flattened semesters, all courses, no matter if it's completed
