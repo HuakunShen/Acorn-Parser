@@ -1,74 +1,92 @@
 <template>
   <div class="custom container">
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" width="55" />
-      <el-table-column label="Date" width="120">
-        <template #default="scope">{{ scope.row.date }}</template>
-      </el-table-column>
-      <el-table-column property="name" label="Name" width="120" />
-      <el-table-column
-        property="address"
-        label="Address"
-        show-overflow-tooltip
-      />
-    </el-table>
-    <div style="margin-top: 20px">
-      <el-button @click="toggleSelection([tableData[1], tableData[2]])"
-        >Toggle selection status of second and third rows</el-button
+    <div class="mx-auto">
+      <el-table
+        ref="multipleTable"
+        :data="tableData"
+        @selection-change="handleSelectionChange"
+        size="mini"
+        fit="true"
       >
+        <el-table-column type="selection" />
+        <el-table-column
+          property="courseCode"
+          label="Course Code"
+          width="100"
+          align="center"
+          header-align="center"
+        />
+        <el-table-column
+          property="mark"
+          label="Mark"
+          align="center"
+          width="50"
+          header-align="center"
+        />
+        <el-table-column
+          property="numberCourseAvg"
+          label="Class Average"
+          align="center"
+          width="110"
+          header-align="center"
+        />
+        <el-table-column property="weight" label="Weight" width="60" align="center" />
+        <el-table-column
+          property="numberGrade"
+          label="GPA"
+          width="50"
+          align="center"
+          header-align="center"
+        />
+        <!-- <el-table-column label="Overwrite GPA">
+          <template #default="scope">
+            <el-input v-model="tableData[scope.$index].numberGrade" placeholder="GPA" size="mini" />
+          </template>
+        </el-table-column> -->
+      </el-table>
+    </div>
+    <div style="margin-top: 20px">
       <el-button @click="toggleSelection()">Clear selection</el-button>
+      <p>Average GPA: {{ avgGPA }}</p>
     </div>
   </div>
 </template>
 
 <script lang="js">
+import { log, getColumnHeaderInfo, sessionTableStr2Obj, calAvgCoursesWeightedGPA } from '../../core/utils';
+import {
+  sampleTables,
+  sampleGpaStr,
+  sampleSessionStr,
+  sampleHeaderStr,
+} from '../../core/sample_data';
+import { AcademicHistory, Semester, Course } from '../../core/lib';
+
+
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-02',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-04',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-01',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-08',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-06',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-        {
-          date: '2016-05-07',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
-      ],
+      tableData: [],
       multipleSelection: [],
+      avgGPA: 0,
+      input: "x"
     };
+  },
+  mounted() {
+    const colHeaderInfo = getColumnHeaderInfo(sampleHeaderStr);
+    const sessionTables = sampleTables.map((tableStr) =>
+      sessionTableStr2Obj(tableStr, sampleSessionStr, sampleGpaStr, colHeaderInfo)
+    );
+    const ah = new AcademicHistory(sessionTables);
+    let courses = ah.getAllCourses().map(courseObj => {
+      const {...obj} = courseObj;
+      return obj;
+    })
+    // courses.forEach(c => {
+    //   c.origGpa=c.numberGrade;
+    // })
+    log(courses);
+    this.tableData = courses
   },
 
   methods: {
@@ -84,10 +102,18 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
       if (this.multipleSelection.length > 0){
-          console.log(this.multipleSelection[0])
-          console.log(this.multipleSelection[0].name)
+          this.avgGPA = calAvgCoursesWeightedGPA(this.multipleSelection).toFixed(2);
       }
+    },
+    handleOverwriteGPA(index, row) {
+      console.log(index, row)
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.custom {
+  max-width: 35em;
+}
+</style>
