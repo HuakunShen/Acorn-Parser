@@ -1,9 +1,4 @@
-import {
-  Courses,
-  ColHeaderInfo,
-  Letter2NumGpaMap,
-  Num2LetterGpaMap,
-} from './types';
+import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
 import { Course, Semester } from './lib';
 
 export const log = console.log,
@@ -11,9 +6,7 @@ export const log = console.log,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses
-    .map((course: Course) => course.weight)
-    .reduce((a: number, b: number) => a + b, 0);
+  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -167,9 +160,7 @@ export const sessionTableStr2Obj = (
         letter2numberGpaMap[rowStr[4]],
         letter2numberGpaMap[rowStr[5]],
         rowStr[6],
-        rowStr[3] !== '' &&
-          rowStr[4] !== 'IPR' &&
-          letter2numberGpaMap[rowStr[4]] !== undefined
+        rowStr[3] !== '' && rowStr[4] !== 'IPR' && letter2numberGpaMap[rowStr[4]] !== undefined
       )
   );
   return new Semester(

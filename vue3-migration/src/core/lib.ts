@@ -9,15 +9,15 @@ import {
 import { Courses, SessionGpaHdr } from './types';
 
 export class Course {
-  courseCode: string = '';
-  title: string = '';
-  weight: number = 0;
-  mark: number = 0; // integer mark (percentage)
-  numberGrade: number = 0; // GPA in number
-  numberCourseAvg: number = 0; // course average GPA in number
+  courseCode: string;
+  title: string;
+  weight: number;
+  mark: number; // integer mark (percentage)
+  numberGrade: number; // GPA in number
+  numberCourseAvg: number; // course average GPA in number
   opt!: string;
   courseHdr!: string;
-  complete: boolean = false; // complete when letterGrade !== 'IPR' and have a value
+  complete: boolean; // complete when letterGrade !== 'IPR' and have a value
   constructor(
     courseCode: string,
     title: string,
@@ -44,8 +44,8 @@ export class Course {
 
 export class Semester {
   courses: Courses = [];
-  sessionHdr: string = '';
-  gpaHdr: string = '';
+  sessionHdr: string;
+  gpaHdr: string;
   year: number;
   season: string;
   gpaSummary: SessionGpaHdr; // parsed from GPA header
@@ -54,7 +54,7 @@ export class Semester {
     this.courses = courses;
     this.sessionHdr = sessionHdr;
     this.gpaHdr = gpaHdr;
-    let [year, season] = sessionHdr.split('-')[0].trim().split(' ');
+    const [year, season] = sessionHdr.split('-')[0].trim().split(' ');
     this.year = parseInt(year);
     this.season = season;
     const gpaStrList = gpaHdr
@@ -87,9 +87,7 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(
-      this.courses.filter((course) => course.complete)
-    );
+    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
   }
 
   getCompletedCourses(): Courses {
@@ -163,7 +161,7 @@ export class AcademicHistory {
   }
 
   static loadFromJson(rawJson: string): AcademicHistory {
-    let parsedData = JSON.parse(rawJson);
+    const parsedData = JSON.parse(rawJson);
     const semesters = parsedData.semesters.map((semester: Semester) => {
       semester.courses = semester.courses.map((course: Course) =>
         Object.setPrototypeOf(course, Course.prototype)
