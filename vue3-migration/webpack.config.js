@@ -4,8 +4,8 @@ module.exports = {
   target: 'node',
   entry: {
     main: './src/main.ts',
-    // content: './src/content.ts',
-    // background: './src/background.ts',
+    content: './src/content.ts',
+    background: './src/background.ts',
   },
   module: {
     rules: [

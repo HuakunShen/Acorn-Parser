@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve src/popup/main.ts",
     "build:ext": "webpack --config webpack.prod.js",
     "build:popup": "vue-cli-service build src/popup/main.ts",
-    "build": "npm run build:popup && npm run build:ext",
+    "build": "npm run build:ext && npm run build:popup",
     "lint": "vue-cli-service lint",
     "dev": "webpack --config webpack.dev.js"
   },
