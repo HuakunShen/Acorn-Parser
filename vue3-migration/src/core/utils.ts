@@ -1,4 +1,9 @@
-import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
+import {
+  Courses,
+  ColHeaderInfo,
+  Letter2NumGpaMap,
+  Num2LetterGpaMap,
+} from './types';
 import { Course, Semester } from './lib';
 
 export const log = console.log,
@@ -6,7 +11,9 @@ export const log = console.log,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
+  return courses
+    .map((course: Course) => course.weight)
+    .reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -107,7 +114,7 @@ export const sessionTableStr2Obj = (
   // row_list should contain a 2D array of strings, each cell is a cell of the table, multiline not merged yet
   let rowList: string[][] = [];
   for (const row of tableRows) {
-    const col_list: string[] = new Array();
+    const col_list: string[] = [];
     for (let i = 1; i < colIndices.length; i++) {
       const val = row.substring(colIndices[i - 1], colIndices[i]).trim();
       col_list.push(val);
@@ -160,7 +167,9 @@ export const sessionTableStr2Obj = (
         letter2numberGpaMap[rowStr[4]],
         letter2numberGpaMap[rowStr[5]],
         rowStr[6],
-        rowStr[3] !== '' && rowStr[4] !== 'IPR' && letter2numberGpaMap[rowStr[4]] !== undefined
+        rowStr[3] !== '' &&
+          rowStr[4] !== 'IPR' &&
+          letter2numberGpaMap[rowStr[4]] !== undefined
       )
   );
   return new Semester(
