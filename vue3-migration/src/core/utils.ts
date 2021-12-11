@@ -1,4 +1,9 @@
-import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
+import {
+  Courses,
+  ColHeaderInfo,
+  Letter2NumGpaMap,
+  Num2LetterGpaMap,
+} from './types';
 import { Course, Semester } from './lib';
 
 export const log = console.log,
@@ -6,7 +11,9 @@ export const log = console.log,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
+  return courses
+    .map((course: Course) => course.weight)
+    .reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -82,8 +89,9 @@ export const courseRowStr2CourseObj = (rowStr: string[]) => {
     letter2numberGpaMap[rowStr[4]],
     letter2numberGpaMap[rowStr[5]],
     rowStr[6],
-    false
+    rowStr[4] !== 'IPR'
   );
+  console.log(courseObj);
   return courseObj;
 };
 
@@ -115,7 +123,6 @@ export const sessionTableStr2Obj = (
   }
 
   let prevValidRow = 0;
-  const curValid = true;
 
   for (const validIdx of validRowIdx) {
     if (validIdx > 1 + prevValidRow) {
@@ -148,6 +155,8 @@ export const sessionTableStr2Obj = (
     newColList.push(opt);
     newRowList.push(newColList);
   }
+
+  // sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
   const courses: Course[] = newRowList.map(
     (rowStr: string[]) =>
       new Course(
@@ -158,7 +167,9 @@ export const sessionTableStr2Obj = (
         letter2numberGpaMap[rowStr[4]],
         letter2numberGpaMap[rowStr[5]],
         rowStr[6],
-        false
+        rowStr[3] !== '' &&
+          rowStr[4] !== 'IPR' &&
+          letter2numberGpaMap[rowStr[4]] !== undefined
       )
   );
   return new Semester(

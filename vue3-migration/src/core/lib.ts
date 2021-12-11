@@ -87,7 +87,9 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
+    return calCoursesWeightSum(
+      this.courses.filter((course) => course.complete)
+    );
   }
 
   getCompletedCourses(): Courses {
@@ -158,5 +160,16 @@ export class AcademicHistory {
 
   getLetterCGPA(): string {
     return number2letterGpaMap[this.getNumberCGPA()];
+  }
+
+  static loadFromJson(rawJson: string): AcademicHistory {
+    let parsedData = JSON.parse(rawJson);
+    const semesters = parsedData.semesters.map((semester: Semester) => {
+      semester.courses = semester.courses.map((course: Course) =>
+        Object.setPrototypeOf(course, Course.prototype)
+      );
+      return Object.setPrototypeOf(semester, Semester.prototype);
+    });
+    return new AcademicHistory(semesters);
   }
 }
