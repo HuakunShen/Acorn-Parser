@@ -12,7 +12,7 @@ export const chromeExists = (): boolean => {
  */
 export const executeParse = (callback: () => void) => {
   if (!chromeExists()) {
-    warn('chrome ext not available');
+    warn('Chrome Not Available, cannot parse page');
   } else {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, 'parse', (res: ParseTableResponse) => {
@@ -28,13 +28,13 @@ export const executeParse = (callback: () => void) => {
 };
 
 export const newTab = (url: string): void => {
-  if (!chromeExists()) console.warn('Chrome Not Available');
+  if (!chromeExists()) console.warn('Chrome Not Available, Cannot Create New Tab');
   chrome?.tabs?.create({ url });
 };
 
 export const checkOnAcademicHistory = (callback: (bool) => void) => {
   if (!chromeExists()) {
-    warn('chrome ext not available');
+    warn('Chrome Not Available, Cannot Check if you are on Academic History Page');
     callback(false);
   } else {
     chrome?.tabs?.query({ currentWindow: true, active: true }, (tabs) => {
@@ -45,7 +45,7 @@ export const checkOnAcademicHistory = (callback: (bool) => void) => {
 
 export const checkOnCompleteAcademicHistory = (callback: (bool) => void) => {
   if (!chromeExists()) {
-    warn('chrome ext not available');
+    warn('Chrome Not Available, Cannot Check if you are on Complete Academic History Page');
     callback(false);
   } else {
     checkOnAcademicHistory((res: boolean) => {
@@ -64,7 +64,7 @@ export const checkOnCompleteAcademicHistory = (callback: (bool) => void) => {
 
 export const clickCompleteHistory = (callback?: (bool) => void) => {
   if (!chromeExists()) {
-    warn('chrome ext not available');
+    warn('Chrome Not Available, cannot click complete history button');
     callback(false);
   } else {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
@@ -77,7 +77,7 @@ export const clickCompleteHistory = (callback?: (bool) => void) => {
 
 export const clearChromeStorage = (callback?: (bool) => void) => {
   if (!chromeExists()) {
-    warn('chrome ext not available');
+    warn('Chrome Not Available, cannot clear chrome storage');
     callback(false);
   } else {
     chrome?.storage?.local?.set({ history: null, parsed: false }, () => {
