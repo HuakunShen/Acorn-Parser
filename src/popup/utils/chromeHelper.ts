@@ -3,11 +3,15 @@ import { ParseTableResponse } from '../../core/types';
 import { AcademicHistory } from '../../core/lib';
 import { academicPageUrl } from '../../core/constants';
 
+export const chromeExists = (): boolean => {
+  return chrome != undefined && chrome.tabs != undefined && chrome.storage != undefined;
+};
+
 /**
  * execute parse, the result will be saved to chrome storage (only if in chrome ext mode)
  */
 export const executeParse = (callback: () => void) => {
-  if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+  if (!chromeExists()) {
     warn('chrome ext not available');
   } else {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
@@ -24,12 +28,12 @@ export const executeParse = (callback: () => void) => {
 };
 
 export const newTab = (url: string): void => {
-  if (!chrome || !chrome.tabs || !chrome.tabs.create) console.warn('Chrome Not Available');
+  if (!chromeExists()) console.warn('Chrome Not Available');
   chrome?.tabs?.create({ url });
 };
 
 export const checkOnAcademicHistory = (callback: (bool) => void) => {
-  if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+  if (!chromeExists()) {
     warn('chrome ext not available');
     callback(false);
   } else {
@@ -40,7 +44,7 @@ export const checkOnAcademicHistory = (callback: (bool) => void) => {
 };
 
 export const checkOnCompleteAcademicHistory = (callback: (bool) => void) => {
-  if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+  if (!chromeExists()) {
     warn('chrome ext not available');
     callback(false);
   } else {
@@ -59,7 +63,7 @@ export const checkOnCompleteAcademicHistory = (callback: (bool) => void) => {
 };
 
 export const clickCompleteHistory = (callback?: (bool) => void) => {
-  if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+  if (!chromeExists()) {
     warn('chrome ext not available');
     callback(false);
   } else {
@@ -72,7 +76,7 @@ export const clickCompleteHistory = (callback?: (bool) => void) => {
 };
 
 export const clearChromeStorage = (callback?: (bool) => void) => {
-  if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+  if (!chromeExists()) {
     warn('chrome ext not available');
     callback(false);
   } else {
