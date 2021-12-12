@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/',
+  publicPath: '',
   outputDir: 'dist/popup',
   //   pages: {
   //     popup: {

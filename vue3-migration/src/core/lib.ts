@@ -6,7 +6,7 @@ import {
   error,
   warn,
 } from './utils';
-import { Courses, SessionGpaHdr } from './types';
+import { Courses, SessionGpaHdr, DeptCountType } from './types';
 
 export class Course {
   courseCode: string;
@@ -39,6 +39,12 @@ export class Course {
   }
   completed() {
     return this.complete;
+  }
+  toConsider() {
+    return this.completed() && this.opt !== 'EXT';
+  }
+  dept() {
+    return this.courseCode.substring(0, 3);
   }
 }
 
@@ -125,7 +131,7 @@ export class AcademicHistory {
    * @returns flattened semesters, only completed courses
    */
   getCompletedCourses(): Courses {
-    return this.getAllCourses().filter((course: Course) => course.complete);
+    return this.getAllCourses().filter((course: Course) => course.completed());
   }
 
   /**
@@ -158,6 +164,35 @@ export class AcademicHistory {
 
   getLetterCGPA(): string {
     return number2letterGpaMap[this.getNumberCGPA()];
+  }
+
+  getGPAByDept(): DeptCountType {
+    const completedCourses = this.getCompletedCourses();
+    const courseCodes = new Set(completedCourses.map((c: Course) => c.courseCode));
+    const count: DeptCountType = {};
+    for (const c of courseCodes) {
+      const dept = c.substring(0, 3);
+      count[dept] = {
+        gpaSum: 0,
+        markSum: 0,
+        weightSum: 0,
+        courseCodes: [] as string[],
+        gpaAvg: 0,
+        markAvg: 0,
+      };
+    }
+    for (const c of completedCourses) {
+      const dept = c.dept();
+      count[dept].gpaSum += c.numberGrade * c.weight;
+      count[dept].markSum += c.mark * c.weight;
+      count[dept].weightSum += c.weight;
+      count[dept].courseCodes.push(c.courseCode);
+    }
+    Object.entries(count).forEach(([dept, value]) => {
+      count[dept].gpaAvg = count[dept].gpaSum / count[dept].weightSum;
+      count[dept].markAvg = count[dept].markSum / count[dept].weightSum;
+    });
+    return count;
   }
 
   static loadFromJson(rawJson: string): AcademicHistory {

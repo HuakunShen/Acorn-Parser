@@ -1,10 +1,12 @@
 <template>
   <div class="custom container">
-    <CourseTable :data="tableData" @selectionChange="handleSelectionChange" />
-    <div class="mt-3">
+    <!-- <el-affix :offset="80"> -->
+    <div class="sticky-top result pt-3 pb-1">
       <p>Average GPA: {{ avgGPA }}</p>
       <p>Average Mark: {{ avgMark }}</p>
     </div>
+    <!-- </el-affix> -->
+    <CourseTable :data="tableData" @selectionChange="handleSelectionChange" />
   </div>
 </template>
 
@@ -48,5 +50,9 @@ export default {
 <style lang="scss" scoped>
 .custom {
   max-width: 35em;
+  .result {
+    background-color: #b2bec3;
+    color: white;
+  }
 }
 </style>
