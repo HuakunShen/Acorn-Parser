@@ -2,8 +2,8 @@
   <div class="custom container">
     <!-- <el-affix :offset="80"> -->
     <div class="sticky-top result pt-3 pb-1">
-      <p>Average GPA: {{ avgGPA }}</p>
-      <p>Average Mark: {{ avgMark }}</p>
+      <h4>Average GPA: {{ avgGPA }}</h4>
+      <h4>Average Mark: {{ avgMark }}</h4>
     </div>
     <!-- </el-affix> -->
     <CourseTable :data="tableData" @selectionChange="handleSelectionChange" />
@@ -49,9 +49,9 @@ export default {
 
 <style lang="scss" scoped>
 .custom {
-  max-width: 35em;
+  max-width: 40em;
   .result {
-    background-color: #b2bec3;
+    background-color: #2d3436;
     color: white;
   }
 }

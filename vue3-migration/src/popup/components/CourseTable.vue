@@ -5,17 +5,31 @@
     @selection-change="handleSelectionChange"
     :size="small"
     fit="false"
+    :default-sort="{ prop: 'mark', order: 'descending' }"
   >
     <el-table-column type="selection" />
     <el-table-column
       property="courseCode"
+      sortable
       label="Code"
       width="100"
       align="center"
       header-align="center"
     />
-    <el-table-column property="mark" label="Mark" align="center" header-align="center" />
-    <el-table-column property="numberGrade" label="GPA" align="center" header-align="center" />
+    <el-table-column
+      property="mark"
+      sortable
+      label="Mark"
+      align="center"
+      header-align="center"
+    />
+    <el-table-column
+      property="numberGrade"
+      sortable
+      label="GPA"
+      align="center"
+      header-align="center"
+    />
     <el-table-column
       property="numberCourseAvg"
       label="Class Avg"

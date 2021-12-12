@@ -1,6 +1,13 @@
 <template>
+  <!-- <el-tabs type="card" @tab-click="handleClick">
+    <el-tab-pane label="User"><router-link to="/">Home</router-link></el-tab-pane>
+    <el-tab-pane label="Config">Config</el-tab-pane>
+    <el-tab-pane label="Role">Role</el-tab-pane>
+    <el-tab-pane label="Task">Task</el-tab-pane>
+  </el-tabs> -->
   <div id="nav">
-    <router-link to="/">Home</router-link> | <router-link to="/custom">Custom</router-link> |
+    <router-link to="/">Home</router-link> |
+    <router-link to="/custom">Custom</router-link> |
     <router-link to="/about">About</router-link>
     <router-view />
   </div>
