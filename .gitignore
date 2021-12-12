@@ -1,5 +1,13 @@
-.DS_Store
+dist/**/*.js
+dist/**/*.js.map
+src/**/*.js
+src/**/*.js.map
+dist/popup
+dist/*.js
 node_modules
+
+
+.DS_Store
 /dist
 !dist/lib
 !dist/images
@@ -22,5 +30,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-vue3-migration/dist/content.js

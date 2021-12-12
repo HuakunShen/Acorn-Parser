@@ -1,14 +1,11 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import vuetify from "./plugins/vuetify";
-
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+const app = createApp(App);
+app.use(ElementPlus);
+app.use(store).use(router);
+app.mount('#app');

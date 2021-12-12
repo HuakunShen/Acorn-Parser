@@ -1,4 +1,5 @@
 import { log, getColumnHeaderInfo, sessionTableStr2Obj } from './core/utils';
+import { ParseTableResponse } from './core/types';
 // import { sampleTables, sampleGpaStr, sampleSessionStr, sampleHeaderStr } from './core/sample_data';
 import { Semester, AcademicHistory } from './core/lib';
 const is_in_complete_history = () => {
@@ -9,21 +10,17 @@ const is_in_complete_history = () => {
 
 const go_to_complete_history = () => {
   const is_complete_history = $('.history-academic-complete').length === 1;
-  console.log(is_complete_history);
   const is_recent_history = $('.academic-history-recent').length === 1;
-  console.log(is_recent_history);
   if (is_recent_history && !is_complete_history) {
     let ele: HTMLElement | null = document.querySelector('[data-ng-click="$ctrl.getComplete()"');
-    ele?.click();
+    if (ele) ele.click();
   }
 };
 
-log('content.ts');
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   switch (req) {
     case 'parse':
       const res = parse_tables();
-      console.log(res);
       sendResponse(res);
       break;
     case 'click_complete':
@@ -37,13 +34,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   }
 });
 
-type tableResponse = {
-  success: boolean;
-  message: string;
-  data: AcademicHistory | null;
-};
-
-const parse_tables = (): tableResponse => {
+const parse_tables = (): ParseTableResponse => {
   const is_recent_history = $('.academic-history-recent').length === 1;
   const is_complete_history = $('.history-academic-complete').length === 1;
 

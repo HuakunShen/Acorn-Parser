@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "allowJs": true,
-    "target": "esnext",
-    "module": "esnext",
+    "outDir": "./dist",
+    "target": "es2018",
+    "module": "commonjs",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -13,19 +12,18 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["chrome", "jquery"],
+    "types": ["webpack-env", "chrome", "jquery"],
     "paths": {
-      "@/*": ["src/popup/*", "src/*"]
+      "@/*": ["src/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  // "include": [
-  //   "src/**/*.ts",
-  //   "src/popup/**/*.tsx",
-  //   "src/popup/**/*.vue",
-  //   "tests/**/*.ts",
-  //   "tests/**/*.tsx"
-  // ],
-  "include": ["src/**/*.ts", "src/**/*.vue"]
-  // "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "src/popup"] // not excluding src/popup could cause errors
 }

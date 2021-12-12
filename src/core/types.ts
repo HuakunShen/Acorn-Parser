@@ -13,6 +13,7 @@ export type sessionType = {
   year: number;
   season: string;
 };
+import { AcademicHistory } from './lib';
 
 // OOP Design
 
@@ -32,3 +33,19 @@ export type ColHeaderInfo = {
 export type Letter2NumGpaMap = { [key: string]: number };
 export type Num2LetterGpaMap = { [key: string]: string }; // object keys must be string
 export type SessionGpaHdr = { [key: string]: string | number };
+export type DeptCountType = {
+  [key: string]: {
+    gpaSum: number;
+    markSum: number;
+    weightSum: number;
+    courseCodes: string[];
+    gpaAvg: number;
+    markAvg: number;
+  };
+};
+
+export type ParseTableResponse = {
+  success: boolean;
+  message: string;
+  data: AcademicHistory | null;
+};

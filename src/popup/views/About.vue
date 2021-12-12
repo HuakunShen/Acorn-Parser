@@ -1,5 +1,22 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <p>
+      <a target="_blank" type="primary" :href="srcCodeURL">Source Code on GitHub</a>
+    </p>
+    <p>
+      <a target="_blank" type="primary" :href="HuakunShenGitHubURL">Author: Huakun Shen</a>
+    </p>
   </div>
 </template>
+
+<script lang="ts">
+import { srcCodeURL, HuakunShenGitHubURL } from '../../core/constants';
+export default {
+  data: () => {
+    return {
+      srcCodeURL,
+      HuakunShenGitHubURL,
+    };
+  },
+};
+</script>

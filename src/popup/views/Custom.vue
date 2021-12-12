@@ -47,12 +47,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .custom {
   max-width: 40em;
-  .result {
-    background-color: #2d3436;
-    color: white;
-  }
+}
+.result {
+  background-color: #2d3436;
+  color: white;
 }
 </style>

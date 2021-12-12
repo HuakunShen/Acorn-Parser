@@ -4,20 +4,20 @@ import {
   calAvgCoursesWeightedGPA,
   calAvgCoursesWeightedMark,
   error,
-  warn,
+  filterDuplicateCourses,
 } from './utils';
-import { Courses, SessionGpaHdr } from './types';
+import { Courses, SessionGpaHdr, DeptCountType } from './types';
 
 export class Course {
-  courseCode: string = '';
-  title: string = '';
-  weight: number = 0;
-  mark: number = 0; // integer mark (percentage)
-  numberGrade: number = 0; // GPA in number
-  numberCourseAvg: number = 0; // course average GPA in number
+  courseCode: string;
+  title: string;
+  weight: number;
+  mark: number; // integer mark (percentage)
+  numberGrade: number; // GPA in number
+  numberCourseAvg: number; // course average GPA in number
   opt!: string;
   courseHdr!: string;
-  complete: boolean = false; // complete when letterGrade !== 'IPR' and have a value
+  complete: boolean; // complete when letterGrade !== 'IPR' and have a value
   constructor(
     courseCode: string,
     title: string,
@@ -40,12 +40,18 @@ export class Course {
   completed() {
     return this.complete;
   }
+  toConsider() {
+    return this.completed() && this.opt !== 'EXT';
+  }
+  dept() {
+    return this.courseCode.substring(0, 3);
+  }
 }
 
 export class Semester {
   courses: Courses = [];
-  sessionHdr: string = '';
-  gpaHdr: string = '';
+  sessionHdr: string;
+  gpaHdr: string;
   year: number;
   season: string;
   gpaSummary: SessionGpaHdr; // parsed from GPA header
@@ -54,7 +60,7 @@ export class Semester {
     this.courses = courses;
     this.sessionHdr = sessionHdr;
     this.gpaHdr = gpaHdr;
-    let [year, season] = sessionHdr.split('-')[0].trim().split(' ');
+    const [year, season] = sessionHdr.split('-')[0].trim().split(' ');
     this.year = parseInt(year);
     this.season = season;
     const gpaStrList = gpaHdr
@@ -121,11 +127,15 @@ export class AcademicHistory {
     return this.semesters.map((semester: Semester) => semester.courses).flat();
   }
 
+  getUniqueCourses(): Courses {
+    return filterDuplicateCourses(this.getAllCourses());
+  }
+
   /**
    * @returns flattened semesters, only completed courses
    */
   getCompletedCourses(): Courses {
-    return this.getAllCourses().filter((course: Course) => course.complete);
+    return this.getAllCourses().filter((course: Course) => course.completed());
   }
 
   /**
@@ -158,5 +168,50 @@ export class AcademicHistory {
 
   getLetterCGPA(): string {
     return number2letterGpaMap[this.getNumberCGPA()];
+  }
+
+  getGPAByDept(): DeptCountType {
+    const completedCourses = this.getCompletedCourses();
+    const courseCodes = new Set(completedCourses.map((c: Course) => c.courseCode));
+    const count: DeptCountType = {};
+    for (const c of courseCodes) {
+      const dept = c.substring(0, 3);
+      count[dept] = {
+        gpaSum: 0,
+        markSum: 0,
+        weightSum: 0,
+        courseCodes: [] as string[],
+        gpaAvg: 0,
+        markAvg: 0,
+      };
+    }
+    for (const c of completedCourses) {
+      const dept = c.dept();
+      count[dept].gpaSum += c.numberGrade * c.weight;
+      count[dept].markSum += c.mark * c.weight;
+      count[dept].weightSum += c.weight;
+      count[dept].courseCodes.push(c.courseCode);
+    }
+    Object.entries(count).forEach(([dept, value]) => {
+      count[dept].gpaAvg = count[dept].gpaSum / count[dept].weightSum;
+      count[dept].markAvg = count[dept].markSum / count[dept].weightSum;
+    });
+    return count;
+  }
+
+  // TODO: add type to parameter
+  static loadFromJsObj(rawJsObj: any): AcademicHistory {
+    const semesters = rawJsObj.semesters.map((semester: Semester) => {
+      semester.courses = semester.courses.map((course: Course) =>
+        Object.setPrototypeOf(course, Course.prototype)
+      );
+      return Object.setPrototypeOf(semester, Semester.prototype);
+    });
+    return new AcademicHistory(semesters);
+  }
+
+  static loadFromJson(rawJson: string): AcademicHistory {
+    const parsedData = JSON.parse(rawJson);
+    return AcademicHistory.loadFromJson(parsedData);
   }
 }

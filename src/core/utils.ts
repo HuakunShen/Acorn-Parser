@@ -1,4 +1,9 @@
-import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
+import {
+  Courses,
+  ColHeaderInfo,
+  Letter2NumGpaMap,
+  Num2LetterGpaMap,
+} from './types';
 import { Course, Semester } from './lib';
 
 export const log = console.log,
@@ -6,7 +11,9 @@ export const log = console.log,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
+  return courses
+    .map((course: Course) => course.weight)
+    .reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -69,6 +76,36 @@ export const getColumnHeaderInfo = (headerStr: string): ColHeaderInfo => {
   return { colNames, colIndices };
 };
 
+export const filterDuplicateCourses = (courses: Courses) => {
+  type x = { [key: string]: Course };
+  const resultCourses: x = {} as x;
+  courses.forEach((c: Course) => {
+    if (c.courseCode in resultCourses) {
+      // duplicate
+      if (c.toConsider()) {
+        resultCourses[c.courseCode] = c;
+      }
+    } else {
+      resultCourses[c.courseCode] = c;
+    }
+  });
+  return Object.values(resultCourses);
+};
+
+export const filterIncompleteCourses = (courses: Courses) =>
+  courses.filter((c: Course) => c.completed());
+
+/**
+ * Filter out courses that are not supposed to be included in calculation, e.g. EXT, CR, NCR, Latewithdraw
+ * @param courses
+ * @returns
+ */
+export const filterNotToCalculateCourses = (courses: Courses) =>
+  courses.filter((c: Course) => c.toConsider());
+
+export const round = (num: number, prec: number) =>
+  Math.round(num * 10 ** prec) / 10 ** prec;
+
 /**
  * sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
  * @param rowStr: array of string to represent a single course
@@ -82,8 +119,9 @@ export const courseRowStr2CourseObj = (rowStr: string[]) => {
     letter2numberGpaMap[rowStr[4]],
     letter2numberGpaMap[rowStr[5]],
     rowStr[6],
-    false
+    rowStr[4] !== 'IPR'
   );
+  console.log(courseObj);
   return courseObj;
 };
 
@@ -106,7 +144,7 @@ export const sessionTableStr2Obj = (
   // row_list should contain a 2D array of strings, each cell is a cell of the table, multiline not merged yet
   let rowList: string[][] = [];
   for (const row of tableRows) {
-    const col_list: string[] = new Array();
+    const col_list: string[] = [];
     for (let i = 1; i < colIndices.length; i++) {
       const val = row.substring(colIndices[i - 1], colIndices[i]).trim();
       col_list.push(val);
@@ -115,7 +153,6 @@ export const sessionTableStr2Obj = (
   }
 
   let prevValidRow = 0;
-  const curValid = true;
 
   for (const validIdx of validRowIdx) {
     if (validIdx > 1 + prevValidRow) {
@@ -148,6 +185,8 @@ export const sessionTableStr2Obj = (
     newColList.push(opt);
     newRowList.push(newColList);
   }
+
+  // sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
   const courses: Course[] = newRowList.map(
     (rowStr: string[]) =>
       new Course(
@@ -158,7 +197,9 @@ export const sessionTableStr2Obj = (
         letter2numberGpaMap[rowStr[4]],
         letter2numberGpaMap[rowStr[5]],
         rowStr[6],
-        false
+        rowStr[3] !== '' &&
+          rowStr[4] !== 'IPR' &&
+          letter2numberGpaMap[rowStr[4]] !== undefined
       )
   );
   return new Semester(

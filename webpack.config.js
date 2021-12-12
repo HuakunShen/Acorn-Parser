@@ -1,7 +1,9 @@
 const path = require('path');
 
 module.exports = {
+  target: 'node',
   entry: {
+    main: './src/main.ts',
     content: './src/content.ts',
     background: './src/background.ts',
   },
