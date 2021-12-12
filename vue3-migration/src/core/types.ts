@@ -13,6 +13,7 @@ export type sessionType = {
   year: number;
   season: string;
 };
+import { AcademicHistory } from './lib';
 
 // OOP Design
 
@@ -41,4 +42,10 @@ export type DeptCountType = {
     gpaAvg: number;
     markAvg: number;
   };
+};
+
+export type ParseTableResponse = {
+  success: boolean;
+  message: string;
+  data: AcademicHistory | null;
 };

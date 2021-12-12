@@ -1,5 +1,8 @@
 <template>
   <div class="home container">
+    <h2>Summary</h2>
+    <el-tag size="mini">Parsed: {{ parsed }}</el-tag
+    ><br /><br />
     <el-button @click="select(uniqueCourses)">cGPA: {{ cgpa }}</el-button>
     <el-button @click="select(uniqueCourses)">Average Mark: {{ avgMark }}</el-button>
 
@@ -87,6 +90,7 @@ export default defineComponent({
       'completeCourses',
       'finishedUniqueCourses',
       'gpaByDept',
+      'parsed',
     ]),
     deptData() {
       return Object.entries(this.gpaByDept as DeptCountType).map(([dept, value]) => {
@@ -113,6 +117,9 @@ export default defineComponent({
   },
   mounted() {
     this.coursesConsideredDisplay = this.uniqueCourses; // init display
+    setTimeout(() => {
+      this.coursesConsideredDisplay = this.uniqueCourses; // init display
+    }, 500);
   },
   methods: {
     download() {

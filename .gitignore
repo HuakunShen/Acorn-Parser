@@ -22,3 +22,5 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+vue3-migration/dist/content.js

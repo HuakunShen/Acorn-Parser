@@ -1,4 +1,5 @@
 import { log, getColumnHeaderInfo, sessionTableStr2Obj } from './core/utils';
+import { ParseTableResponse } from './core/types';
 // import { sampleTables, sampleGpaStr, sampleSessionStr, sampleHeaderStr } from './core/sample_data';
 import { Semester, AcademicHistory } from './core/lib';
 const is_in_complete_history = () => {
@@ -9,23 +10,17 @@ const is_in_complete_history = () => {
 
 const go_to_complete_history = () => {
   const is_complete_history = $('.history-academic-complete').length === 1;
-  console.log(is_complete_history);
   const is_recent_history = $('.academic-history-recent').length === 1;
-  console.log(is_recent_history);
   if (is_recent_history && !is_complete_history) {
-    let ele: HTMLElement | null = document.querySelector(
-      '[data-ng-click="$ctrl.getComplete()"'
-    );
+    let ele: HTMLElement | null = document.querySelector('[data-ng-click="$ctrl.getComplete()"');
     if (ele) ele.click();
   }
 };
 
-log('content.ts');
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   switch (req) {
     case 'parse':
       const res = parse_tables();
-      console.log(res);
       sendResponse(res);
       break;
     case 'click_complete':
@@ -39,13 +34,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   }
 });
 
-type tableResponse = {
-  success: boolean;
-  message: string;
-  data: AcademicHistory | null;
-};
-
-const parse_tables = (): tableResponse => {
+const parse_tables = (): ParseTableResponse => {
   const is_recent_history = $('.academic-history-recent').length === 1;
   const is_complete_history = $('.history-academic-complete').length === 1;
 
@@ -53,8 +42,7 @@ const parse_tables = (): tableResponse => {
     const tables = $('[data-ng-repeat="session in $ctrl.data.academicData"]');
     return {
       success: false,
-      message:
-        'This is recent academic history, I parse only complete academic history.',
+      message: 'This is recent academic history, I parse only complete academic history.',
       data: null,
     };
   } else if (is_complete_history) {
@@ -65,15 +53,11 @@ const parse_tables = (): tableResponse => {
       const tableHdr = table?.previousElementSibling as HTMLElement;
       const tableHdrStr = tableHdr.innerText;
       // TODO: sessions not finished may not have this line. Fix this case
-      const sessionGPA = table?.previousElementSibling
-        ?.previousElementSibling as HTMLElement;
+      const sessionGPA = table?.previousElementSibling?.previousElementSibling as HTMLElement;
       const sessionGPAStr =
-        sessionGPA.className == 'emph gpa-listing pre-elem'
-          ? sessionGPA.innerText
-          : null;
+        sessionGPA.className == 'emph gpa-listing pre-elem' ? sessionGPA.innerText : null;
       // TODO: sessions not finished may not have this line. Fix this case
-      const session: HTMLElement =
-        sessionGPA?.previousElementSibling as HTMLElement;
+      const session: HTMLElement = sessionGPA?.previousElementSibling as HTMLElement;
       const sessionStr = session.innerText;
       const tableStr = table.innerText;
       const colHeaderInfo = getColumnHeaderInfo(tableHdrStr);
@@ -94,8 +78,7 @@ const parse_tables = (): tableResponse => {
   } else {
     return {
       success: false,
-      message:
-        'No Academic History Found, please go to the correct web page and click parse.',
+      message: 'No Academic History Found, please go to the correct web page and click parse.',
       data: null,
     };
   }

@@ -93,9 +93,7 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(
-      this.courses.filter((course) => course.complete)
-    );
+    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
   }
 
   getCompletedCourses(): Courses {
@@ -174,9 +172,7 @@ export class AcademicHistory {
 
   getGPAByDept(): DeptCountType {
     const completedCourses = this.getCompletedCourses();
-    const courseCodes = new Set(
-      completedCourses.map((c: Course) => c.courseCode)
-    );
+    const courseCodes = new Set(completedCourses.map((c: Course) => c.courseCode));
     const count: DeptCountType = {};
     for (const c of courseCodes) {
       const dept = c.substring(0, 3);
@@ -203,14 +199,19 @@ export class AcademicHistory {
     return count;
   }
 
-  static loadFromJson(rawJson: string): AcademicHistory {
-    const parsedData = JSON.parse(rawJson);
-    const semesters = parsedData.semesters.map((semester: Semester) => {
+  // TODO: add type to parameter
+  static loadFromJsObj(rawJsObj: any): AcademicHistory {
+    const semesters = rawJsObj.semesters.map((semester: Semester) => {
       semester.courses = semester.courses.map((course: Course) =>
         Object.setPrototypeOf(course, Course.prototype)
       );
       return Object.setPrototypeOf(semester, Semester.prototype);
     });
     return new AcademicHistory(semesters);
+  }
+
+  static loadFromJson(rawJson: string): AcademicHistory {
+    const parsedData = JSON.parse(rawJson);
+    return AcademicHistory.loadFromJson(parsedData);
   }
 }

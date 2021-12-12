@@ -1,10 +1,19 @@
 import { createStore } from 'vuex';
 import { getSampleData } from '../../core/sample';
 import { AcademicHistory, Course } from '../../core/lib';
-import { DeptCountType, Courses } from '../../core/types';
+import { DeptCountType, Courses, ParseTableResponse } from '../../core/types';
+import { log, warn } from '../../core/utils';
+import {
+  checkOnAcademicHistory,
+  checkOnCompleteAcademicHistory,
+  clickCompleteHistory,
+} from '../utils/chromeHelper';
 export default createStore({
   state: {
     academicHistory: new AcademicHistory([]),
+    parsed: false,
+    onAcademicHistoryPage: false,
+    onCompleteAcademicHistoryPage: false,
   },
   getters: {
     academicHistory: (state): AcademicHistory => state.academicHistory,
@@ -14,16 +23,49 @@ export default createStore({
     finishedUniqueCourses: (state, getters): Courses =>
       getters.uniqueCourses.filter((c: Course) => c.toConsider()),
     gpaByDept: (state, getters): DeptCountType => getters.academicHistory.getGPAByDept(),
+    parsed: (state) => state.parsed,
+    onAcademicHistoryPage: (state) => state.onAcademicHistoryPage,
+    onCompleteAcademicHistoryPage: (state) => state.onCompleteAcademicHistoryPage,
   },
   mutations: {
     setAcademicHistory(state, academicHistory: AcademicHistory): void {
       state.academicHistory = academicHistory;
     },
+    setParsed(state, value: boolean): void {
+      state.parsed = value;
+    },
+    setOnAcademicHistoryPage(state, value: boolean): void {
+      state.onAcademicHistoryPage = value;
+    },
+    setOnCompleteAcademicHistoryPage(state, value: boolean): void {
+      state.onCompleteAcademicHistoryPage = value;
+    },
   },
   actions: {
     initAH({ commit }): void {
-      commit('setAcademicHistory', getSampleData());
+      console.log('initAH');
+      if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+        warn('chrome ext not available, sample data will be used');
+        commit('setAcademicHistory', getSampleData());
+      } else {
+        chrome.storage.local.get(['history', 'parsed'], function (result) {
+          const ah = result.history
+            ? AcademicHistory.loadFromJsObj(result.history)
+            : new AcademicHistory([]);
+          commit('setAcademicHistory', ah);
+          commit('setParsed', result.parsed ? result.parsed : false);
+        });
+      }
+    },
+    updatePageStatus({ commit }): void {
+      checkOnAcademicHistory((res) => {
+        commit('setOnAcademicHistoryPage', res);
+      });
+      checkOnCompleteAcademicHistory((res) => {
+        commit('setOnCompleteAcademicHistoryPage', res);
+      });
     },
   },
+
   modules: {},
 });
