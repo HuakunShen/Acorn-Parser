@@ -7,8 +7,12 @@
       >Average Mark: {{ avgMark }}</el-button
     >
 
-    <el-button>Total Credit: {{ weightSum }}</el-button>
-    <el-button>Total Credit Finished: {{ weightSumDone }}</el-button>
+    <el-button @click="select(uniqueCourses)"
+      >Total Credit: {{ weightSum }}</el-button
+    >
+    <el-button @click="select(finishedCourses)"
+      >Total Credit Finished: {{ weightSumDone }}</el-button
+    >
     <el-button @click="download" type="primary">Download</el-button>
     <!-- <el-button v-for="(dept, value) in Object.entries(gpaByDept)" :key="dept"
       >{{ dept }} {{ value }}</el-button
@@ -70,14 +74,19 @@
 import { defineComponent } from 'vue';
 import { getSampleData } from '../../core/sample';
 import { DeptCountType, Courses } from '../../core/types';
-import { AcademicHistory, Course } from '@/core/lib';
-import { calCoursesWeightSum, round } from '../../core/utils';
+import { AcademicHistory, Course } from '../../core/lib';
+import {
+  calCoursesWeightSum,
+  round,
+  filterNotToCalculateCourses,
+} from '../../core/utils';
 export default defineComponent({
   name: 'Home',
   components: {},
   data() {
     return {
-      courses: [] as Courses,
+      uniqueCourses: [] as Courses, // year courses could repeat
+      finishedCourses: [] as Courses,
       avgMark: 0,
       cgpa: 0,
       ah: new AcademicHistory([]),
@@ -99,25 +108,16 @@ export default defineComponent({
     },
     weightSum() {
       // TODO: Total Credit seems to be wrong, fix this problem
-      if (this.ah != undefined) {
-        return calCoursesWeightSum(
-          Object.setPrototypeOf(
-            this.ah,
-            AcademicHistory.prototype
-          )?.getUniqueCourses()
-        );
-      } else {
-        return 0;
-      }
+      if (this.ah != undefined)
+        return calCoursesWeightSum(this.uniqueCourses as Courses);
+      else return 0;
     },
     weightSumDone() {
       if (this.ah != undefined) {
         return calCoursesWeightSum(
-          Object.setPrototypeOf(this.ah, AcademicHistory.prototype)
-            ?.getUniqueCourses()
-            .filter((c: Course) =>
-              Object.setPrototypeOf(c, Course.prototype).toConsider()
-            )
+          this.uniqueCourses.filter((c: Course) =>
+            Object.setPrototypeOf(c, Course.prototype).toConsider()
+          )
         );
       } else {
         return 0;
@@ -126,15 +126,12 @@ export default defineComponent({
   },
   mounted() {
     const ah = getSampleData();
-
     this.ah = ah;
-    let courses: Courses = ah
-      .getCompletedCourses()
-      .map((courseObj) => Object.setPrototypeOf(courseObj, Course.prototype));
-
-    this.courses = courses;
-    this.coursesConsideredAll = courses;
-    this.coursesConsideredDisplay = this.coursesConsideredAll;
+    const uniqueCourses: Courses = ah.getUniqueCourses();
+    this.uniqueCourses = uniqueCourses;
+    this.coursesConsideredAll = uniqueCourses;
+    this.finishedCourses = filterNotToCalculateCourses(uniqueCourses);
+    this.coursesConsideredDisplay = this.coursesConsideredAll; // init display
     this.avgMark = round(ah.getAvgMark(), 2);
     this.cgpa = round(ah.getNumberCGPA(), 2);
     this.gpaByDept = ah.getGPAByDept();
@@ -158,8 +155,8 @@ export default defineComponent({
     },
     cellClick(row, column, cell, event) {
       const courseCodeSet = new Set(this.gpaByDept[row.dept].courseCodes);
-      this.coursesConsideredDisplay = this.courses.filter((course: Course) =>
-        courseCodeSet.has(course.courseCode)
+      this.coursesConsideredDisplay = this.uniqueCourses.filter(
+        (course: Course) => courseCodeSet.has(course.courseCode)
       );
     },
   },

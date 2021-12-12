@@ -1,13 +1,20 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
-    <el-button>button</el-button>
+    <p>
+      <el-link
+        type="primary"
+        href="https://github.com/HuakunShen/Acorn-Academic-History-Chrome-Extension"
+        >Source Code on GitHub</el-link
+      >
+    </p>
+    <p>
+      <el-link type="primary" href="https://github.com/HuakunShen"
+        >Author: Huakun Shen</el-link
+      >
+    </p>
   </div>
 </template>
 
 <script>
-import { ElButton } from 'element-plus';
-export default {
-  components: { ElButton },
-};
+export default {};
 </script>

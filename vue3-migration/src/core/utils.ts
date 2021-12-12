@@ -76,7 +76,7 @@ export const getColumnHeaderInfo = (headerStr: string): ColHeaderInfo => {
   return { colNames, colIndices };
 };
 
-export const removeDuplicateCourses = (courses: Course[]) => {
+export const filterDuplicateCourses = (courses: Courses) => {
   type x = { [key: string]: Course };
   const resultCourses: x = {} as x;
   courses.forEach((c: Course) => {
@@ -92,8 +92,19 @@ export const removeDuplicateCourses = (courses: Course[]) => {
   return Object.values(resultCourses);
 };
 
+export const filterIncompleteCourses = (courses: Courses) =>
+  courses.filter((c: Course) => c.completed());
+
+/**
+ * Filter out courses that are not supposed to be included in calculation, e.g. EXT, CR, NCR, Latewithdraw
+ * @param courses
+ * @returns
+ */
+export const filterNotToCalculateCourses = (courses: Courses) =>
+  courses.filter((c: Course) => c.toConsider());
+
 export const round = (num: number, prec: number) =>
-  Math.round(num * 10 ** prec) / 100 ** prec;
+  Math.round(num * 10 ** prec) / 10 ** prec;
 
 /**
  * sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]

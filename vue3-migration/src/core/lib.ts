@@ -4,8 +4,7 @@ import {
   calAvgCoursesWeightedGPA,
   calAvgCoursesWeightedMark,
   error,
-  warn,
-  removeDuplicateCourses,
+  filterDuplicateCourses,
 } from './utils';
 import { Courses, SessionGpaHdr, DeptCountType } from './types';
 
@@ -131,7 +130,7 @@ export class AcademicHistory {
   }
 
   getUniqueCourses(): Courses {
-    return removeDuplicateCourses(this.getAllCourses());
+    return filterDuplicateCourses(this.getAllCourses());
   }
 
   /**
