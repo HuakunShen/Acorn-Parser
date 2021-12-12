@@ -1,16 +1,10 @@
 <template>
   <div class="home container">
-    <el-button @click="select(coursesConsideredAll)"
-      >cGPA: {{ cgpa }}</el-button
-    >
-    <el-button @click="select(coursesConsideredAll)"
-      >Average Mark: {{ avgMark }}</el-button
-    >
+    <el-button @click="select(uniqueCourses)">cGPA: {{ cgpa }}</el-button>
+    <el-button @click="select(uniqueCourses)">Average Mark: {{ avgMark }}</el-button>
 
-    <el-button @click="select(uniqueCourses)"
-      >Total Credit: {{ weightSum }}</el-button
-    >
-    <el-button @click="select(finishedCourses)"
+    <el-button @click="select(uniqueCourses)">Total Credit: {{ weightSum }}</el-button>
+    <el-button @click="select(finishedUniqueCourses)"
       >Total Credit Finished: {{ weightSumDone }}</el-button
     >
     <el-button @click="download" type="primary">Download</el-button>
@@ -72,32 +66,30 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getSampleData } from '../../core/sample';
-import { DeptCountType, Courses } from '../../core/types';
-import { AcademicHistory, Course } from '../../core/lib';
-import {
-  calCoursesWeightSum,
-  round,
-  filterNotToCalculateCourses,
-} from '../../core/utils';
+import { Courses, DeptCountType } from '../../core/types';
+import { Course } from '../../core/lib';
+import { mapGetters } from 'vuex';
+import { calCoursesWeightSum, round } from '../../core/utils';
+
 export default defineComponent({
   name: 'Home',
   components: {},
   data() {
     return {
-      uniqueCourses: [] as Courses, // year courses could repeat
-      finishedCourses: [] as Courses,
-      avgMark: 0,
-      cgpa: 0,
-      ah: new AcademicHistory([]),
-      coursesConsideredAll: [] as Courses,
       coursesConsideredDisplay: [] as Courses,
-      gpaByDept: {} as DeptCountType,
     };
   },
   computed: {
+    ...mapGetters([
+      'academicHistory',
+      'allCourses',
+      'uniqueCourses',
+      'completeCourses',
+      'finishedUniqueCourses',
+      'gpaByDept',
+    ]),
     deptData() {
-      return Object.entries(this.gpaByDept).map(([dept, value]) => {
+      return Object.entries(this.gpaByDept as DeptCountType).map(([dept, value]) => {
         return {
           dept,
           gpaAvg: round(value.gpaAvg, 2),
@@ -107,39 +99,25 @@ export default defineComponent({
       });
     },
     weightSum() {
-      // TODO: Total Credit seems to be wrong, fix this problem
-      if (this.ah != undefined)
-        return calCoursesWeightSum(this.uniqueCourses as Courses);
-      else return 0;
+      return calCoursesWeightSum(this.uniqueCourses);
     },
     weightSumDone() {
-      if (this.ah != undefined) {
-        return calCoursesWeightSum(
-          this.uniqueCourses.filter((c: Course) =>
-            Object.setPrototypeOf(c, Course.prototype).toConsider()
-          )
-        );
-      } else {
-        return 0;
-      }
+      return calCoursesWeightSum(this.finishedUniqueCourses);
+    },
+    avgMark() {
+      return round(this.academicHistory.getAvgMark(), 2);
+    },
+    cgpa() {
+      return round(this.academicHistory.getNumberCGPA(), 2);
     },
   },
   mounted() {
-    const ah = getSampleData();
-    this.ah = ah;
-    const uniqueCourses: Courses = ah.getUniqueCourses();
-    this.uniqueCourses = uniqueCourses;
-    this.coursesConsideredAll = uniqueCourses;
-    this.finishedCourses = filterNotToCalculateCourses(uniqueCourses);
-    this.coursesConsideredDisplay = this.coursesConsideredAll; // init display
-    this.avgMark = round(ah.getAvgMark(), 2);
-    this.cgpa = round(ah.getNumberCGPA(), 2);
-    this.gpaByDept = ah.getGPAByDept();
+    this.coursesConsideredDisplay = this.uniqueCourses; // init display
   },
   methods: {
     download() {
       const json_file = URL.createObjectURL(
-        new Blob([JSON.stringify(this.ah, null, 2)], {
+        new Blob([JSON.stringify(this.academicHistory, null, 2)], {
           type: 'application/json',
         })
       );
@@ -150,13 +128,13 @@ export default defineComponent({
         saveAs: true,
       });
     },
-    select(courseCodes: Courses) {
-      this.coursesConsideredDisplay = courseCodes;
+    select(courses: Courses) {
+      this.coursesConsideredDisplay = courses;
     },
     cellClick(row, column, cell, event) {
       const courseCodeSet = new Set(this.gpaByDept[row.dept].courseCodes);
-      this.coursesConsideredDisplay = this.uniqueCourses.filter(
-        (course: Course) => courseCodeSet.has(course.courseCode)
+      this.coursesConsideredDisplay = this.uniqueCourses.filter((course: Course) =>
+        courseCodeSet.has(course.courseCode)
       );
     },
   },
@@ -164,10 +142,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.course-code-tooltip {
-  margin: 0.3em;
-}
-.table-container {
-  width: 30em;
+.home {
+  .course-code-tooltip {
+    margin: 0.3em;
+  }
+  .table-container {
+    width: 30em;
+  }
 }
 </style>
