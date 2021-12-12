@@ -13,7 +13,7 @@
 <style lang="scss" scoped>
 #popup {
   min-width: 50rem;
-  min-height: 50rem;
+  min-height: 80%;
   text-align: center;
 }
 </style>

@@ -1,0 +1,6 @@
+dist/**/*.js
+dist/**/*.js.map
+src/**/*.js
+src/**/*.js.map
+dist/popup
+dist/*.js
