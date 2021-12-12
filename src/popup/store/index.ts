@@ -58,6 +58,10 @@ export default createStore({
         });
       }
     },
+    loadSampleData({ commit }): void {
+      commit('setAcademicHistory', getSampleData());
+      commit('setParsed', true);
+    },
     updatePageStatus({ commit }): void {
       checkOnAcademicHistory((res) => {
         commit('setOnAcademicHistoryPage', res);

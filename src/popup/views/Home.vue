@@ -1,23 +1,13 @@
 <template>
   <div class="home container">
     <h2>Summary</h2>
-    <el-tag size="mini">Parsed: {{ parsed }}</el-tag
-    ><br /><br />
     <el-button @click="select(uniqueCourses)">cGPA: {{ cgpa }}</el-button>
-    <el-button @click="select(uniqueCourses)"
-      >Average Mark: {{ avgMark }}</el-button
-    >
+    <el-button @click="select(uniqueCourses)">Average Mark: {{ avgMark }}</el-button>
 
-    <el-button @click="select(uniqueCourses)"
-      >Total Credit: {{ weightSum }}</el-button
-    >
+    <el-button @click="select(uniqueCourses)">Total Credit: {{ weightSum }}</el-button>
     <el-button @click="select(finishedUniqueCourses)"
       >Total Credit Finished: {{ weightSumDone }}</el-button
     >
-    <el-button @click="download" type="primary">Download</el-button>
-    <!-- <el-button v-for="(dept, value) in Object.entries(gpaByDept)" :key="dept"
-      >{{ dept }} {{ value }}</el-button
-    > -->
     <div class="table-container mt-3 mx-auto">
       <el-table
         :data="deptData"
@@ -97,16 +87,14 @@ export default defineComponent({
       'parsed',
     ]),
     deptData() {
-      return Object.entries(this.gpaByDept as DeptCountType).map(
-        ([dept, value]) => {
-          return {
-            dept,
-            gpaAvg: round(value.gpaAvg, 2),
-            markAvg: round(value.markAvg, 2),
-            numCourses: value.courseCodes.length,
-          };
-        }
-      );
+      return Object.entries(this.gpaByDept as DeptCountType).map(([dept, value]) => {
+        return {
+          dept,
+          gpaAvg: round(value.gpaAvg, 2),
+          markAvg: round(value.markAvg, 2),
+          numCourses: value.courseCodes.length,
+        };
+      });
     },
     weightSum() {
       return calCoursesWeightSum(this.uniqueCourses);
@@ -123,12 +111,7 @@ export default defineComponent({
   },
   watch: {
     parsed: function (val) {
-      console.log(`parsed changed to ${val}`);
-      if (val === false) {
-        this.coursesConsideredDisplay = [];
-      } else {
-        this.coursesConsideredDisplay = this.uniqueCourses;
-      }
+      this.coursesConsideredDisplay = !val ? [] : this.uniqueCourses;
     },
   },
   mounted() {
@@ -138,26 +121,13 @@ export default defineComponent({
     }, 500);
   },
   methods: {
-    download() {
-      const json_file = URL.createObjectURL(
-        new Blob([JSON.stringify(this.academicHistory, null, 2)], {
-          type: 'application/json',
-        })
-      );
-      chrome.downloads.download({
-        url: json_file,
-        filename: 'academic_history.json',
-        conflictAction: 'overwrite',
-        saveAs: true,
-      });
-    },
     select(courses: Courses) {
       this.coursesConsideredDisplay = courses;
     },
     cellClick(row: any, column: any, cell: any, event: any) {
       const courseCodeSet = new Set(this.gpaByDept[row.dept].courseCodes);
-      this.coursesConsideredDisplay = this.uniqueCourses.filter(
-        (course: Course) => courseCodeSet.has(course.courseCode)
+      this.coursesConsideredDisplay = this.uniqueCourses.filter((course: Course) =>
+        courseCodeSet.has(course.courseCode)
       );
     },
   },
