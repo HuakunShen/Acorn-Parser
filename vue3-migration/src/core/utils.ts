@@ -76,6 +76,25 @@ export const getColumnHeaderInfo = (headerStr: string): ColHeaderInfo => {
   return { colNames, colIndices };
 };
 
+export const removeDuplicateCourses = (courses: Course[]) => {
+  type x = { [key: string]: Course };
+  const resultCourses: x = {} as x;
+  courses.forEach((c: Course) => {
+    if (c.courseCode in resultCourses) {
+      // duplicate
+      if (c.toConsider()) {
+        resultCourses[c.courseCode] = c;
+      }
+    } else {
+      resultCourses[c.courseCode] = c;
+    }
+  });
+  return Object.values(resultCourses);
+};
+
+export const round = (num: number, prec: number) =>
+  Math.round(num * 10 ** prec) / 100 ** prec;
+
 /**
  * sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
  * @param rowStr: array of string to represent a single course

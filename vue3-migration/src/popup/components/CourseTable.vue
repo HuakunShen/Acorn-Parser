@@ -5,7 +5,6 @@
     @selection-change="handleSelectionChange"
     :size="small"
     fit="false"
-    :default-sort="{ prop: 'mark', order: 'descending' }"
   >
     <el-table-column type="selection" />
     <el-table-column

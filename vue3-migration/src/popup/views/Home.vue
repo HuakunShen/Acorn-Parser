@@ -9,6 +9,7 @@
 
     <el-button>Total Credit: {{ weightSum }}</el-button>
     <el-button>Total Credit Finished: {{ weightSumDone }}</el-button>
+    <el-button @click="download" type="primary">Download</el-button>
     <!-- <el-button v-for="(dept, value) in Object.entries(gpaByDept)" :key="dept"
       >{{ dept }} {{ value }}</el-button
     > -->
@@ -68,20 +69,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getSampleData } from '../../core/sample';
-import { Course } from '../../core/lib';
-import { DeptCountType } from '../../core/types';
-import { AcademicHistory } from '@/core/lib';
+import { DeptCountType, Courses } from '../../core/types';
+import { AcademicHistory, Course } from '@/core/lib';
+import { calCoursesWeightSum, round } from '../../core/utils';
 export default defineComponent({
   name: 'Home',
   components: {},
   data() {
     return {
-      courses: [] as Course[],
+      courses: [] as Courses,
       avgMark: 0,
       cgpa: 0,
-      ah: null,
-      coursesConsideredAll: [] as Course[],
-      coursesConsideredDisplay: [] as Course[],
+      ah: new AcademicHistory([]),
+      coursesConsideredAll: [] as Courses,
+      coursesConsideredDisplay: [] as Courses,
       gpaByDept: {} as DeptCountType,
     };
   },
@@ -90,32 +91,34 @@ export default defineComponent({
       return Object.entries(this.gpaByDept).map(([dept, value]) => {
         return {
           dept,
-          gpaAvg: value.gpaAvg.toFixed(2),
-          markAvg: value.markAvg.toFixed(2),
+          gpaAvg: round(value.gpaAvg, 2),
+          markAvg: round(value.markAvg, 2),
           numCourses: value.courseCodes.length,
         };
       });
     },
     weightSum() {
-      if (this.ah) {
-        return Object.setPrototypeOf(this.ah, AcademicHistory.prototype)
-          ?.getAllCourses()
-          .map((c: Course) => c.weight)
-          .reduce((a, b) => a + b, 0);
+      // TODO: Total Credit seems to be wrong, fix this problem
+      if (this.ah != undefined) {
+        return calCoursesWeightSum(
+          Object.setPrototypeOf(
+            this.ah,
+            AcademicHistory.prototype
+          )?.getUniqueCourses()
+        );
       } else {
         return 0;
       }
     },
     weightSumDone() {
-      // console.log(this.ah?.getAllCourses());
-      if (this.ah) {
-        return Object.setPrototypeOf(this.ah, AcademicHistory.prototype)
-          ?.getAllCourses()
-          .filter((c: Course) =>
-            Object.setPrototypeOf(c, Course.prototype).completed()
-          )
-          .map((c: Course) => c.weight)
-          .reduce((a, b) => a + b, 0);
+      if (this.ah != undefined) {
+        return calCoursesWeightSum(
+          Object.setPrototypeOf(this.ah, AcademicHistory.prototype)
+            ?.getUniqueCourses()
+            .filter((c: Course) =>
+              Object.setPrototypeOf(c, Course.prototype).toConsider()
+            )
+        );
       } else {
         return 0;
       }
@@ -123,20 +126,34 @@ export default defineComponent({
   },
   mounted() {
     const ah = getSampleData();
+
     this.ah = ah;
-    let courses = ah.getCompletedCourses().map((courseObj) => {
-      const { ...obj } = courseObj;
-      return obj;
-    });
+    let courses: Courses = ah
+      .getCompletedCourses()
+      .map((courseObj) => Object.setPrototypeOf(courseObj, Course.prototype));
+
     this.courses = courses;
     this.coursesConsideredAll = courses;
     this.coursesConsideredDisplay = this.coursesConsideredAll;
-    this.avgMark = ah.getAvgMark().toFixed(2);
-    this.cgpa = ah.getNumberCGPA().toFixed(2);
+    this.avgMark = round(ah.getAvgMark(), 2);
+    this.cgpa = round(ah.getNumberCGPA(), 2);
     this.gpaByDept = ah.getGPAByDept();
   },
   methods: {
-    select(courseCodes: string[]) {
+    download() {
+      const json_file = URL.createObjectURL(
+        new Blob([JSON.stringify(this.ah, null, 2)], {
+          type: 'application/json',
+        })
+      );
+      chrome.downloads.download({
+        url: json_file,
+        filename: 'academic_history.json',
+        conflictAction: 'overwrite',
+        saveAs: true,
+      });
+    },
+    select(courseCodes: Courses) {
       this.coursesConsideredDisplay = courseCodes;
     },
     cellClick(row, column, cell, event) {

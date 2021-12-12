@@ -5,6 +5,7 @@ import {
   calAvgCoursesWeightedMark,
   error,
   warn,
+  removeDuplicateCourses,
 } from './utils';
 import { Courses, SessionGpaHdr, DeptCountType } from './types';
 
@@ -93,7 +94,9 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
+    return calCoursesWeightSum(
+      this.courses.filter((course) => course.complete)
+    );
   }
 
   getCompletedCourses(): Courses {
@@ -125,6 +128,10 @@ export class AcademicHistory {
    */
   getAllCourses(): Courses {
     return this.semesters.map((semester: Semester) => semester.courses).flat();
+  }
+
+  getUniqueCourses(): Courses {
+    return removeDuplicateCourses(this.getAllCourses());
   }
 
   /**
@@ -168,7 +175,9 @@ export class AcademicHistory {
 
   getGPAByDept(): DeptCountType {
     const completedCourses = this.getCompletedCourses();
-    const courseCodes = new Set(completedCourses.map((c: Course) => c.courseCode));
+    const courseCodes = new Set(
+      completedCourses.map((c: Course) => c.courseCode)
+    );
     const count: DeptCountType = {};
     for (const c of courseCodes) {
       const dept = c.substring(0, 3);
