@@ -1,20 +1,22 @@
 <template>
   <div class="about">
     <p>
-      <el-link
-        type="primary"
-        href="https://github.com/HuakunShen/Acorn-Academic-History-Chrome-Extension"
-        >Source Code on GitHub</el-link
-      >
+      <a target="_blank" type="primary" :href="srcCodeURL">Source Code on GitHub</a>
     </p>
     <p>
-      <el-link type="primary" href="https://github.com/HuakunShen"
-        >Author: Huakun Shen</el-link
-      >
+      <a target="_blank" type="primary" :href="HuakunShenGitHubURL">Author: Huakun Shen</a>
     </p>
   </div>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+import { srcCodeURL, HuakunShenGitHubURL } from '../../core/constants';
+export default {
+  data: () => {
+    return {
+      srcCodeURL,
+      HuakunShenGitHubURL,
+    };
+  },
+};
 </script>

@@ -1,7 +1,8 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> | <router-link to="/custom">Custom</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link class="link" to="/">Home</router-link> |
+    <router-link class="link" to="/custom">Custom</router-link> |
+    <router-link class="link" to="/about">About</router-link>
     <router-view />
   </div>
 </template>
@@ -16,7 +17,7 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss">
 #app {
   min-width: 50em;
   height: 100%;

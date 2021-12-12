@@ -131,7 +131,7 @@ export default defineComponent({
     select(courses: Courses) {
       this.coursesConsideredDisplay = courses;
     },
-    cellClick(row, column, cell, event) {
+    cellClick(row: any, column: any, cell: any, event: any) {
       const courseCodeSet = new Set(this.gpaByDept[row.dept].courseCodes);
       this.coursesConsideredDisplay = this.uniqueCourses.filter((course: Course) =>
         courseCodeSet.has(course.courseCode)
