@@ -164,11 +164,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.course-code-tooltip {
-  margin: 0.3em;
-}
-.table-container {
-  width: 30em;
+<style lang="scss" scoped>
+.home {
+  .course-code-tooltip {
+    margin: 0.3em;
+  }
+  .table-container {
+    width: 30em;
+  }
 }
 </style>
