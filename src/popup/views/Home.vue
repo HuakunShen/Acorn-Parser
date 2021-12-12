@@ -9,54 +9,11 @@
       >Total Credit Finished: {{ weightSumDone }}</el-button
     >
     <div class="table-container mt-3 mx-auto">
-      <el-table
-        :data="deptData"
-        border
-        @cell-click="cellClick"
-        :default-sort="{ prop: 'numCourses', order: 'descending' }"
-      >
-        <el-table-column
-          class="dept-col-cell"
-          property="dept"
-          label="Dept."
-          align="center"
-          header-align="center"
-        />
-        <el-table-column
-          property="gpaAvg"
-          sortable
-          label="GPA"
-          align="center"
-          header-align="center"
-        />
-        <el-table-column
-          property="markAvg"
-          sortable
-          label="Mark"
-          align="center"
-          header-align="center"
-        />
-        <el-table-column
-          sortable
-          property="numCourses"
-          label="# Course"
-          align="center"
-          header-align="center"
-        />
-      </el-table>
+      <DeptTable @cellClick="cellClick" />
     </div>
     <div class="course-considered mt-5">
       <h2>Course Considered</h2>
-      <el-tooltip
-        class="item course-code-tooltip"
-        effect="dark"
-        v-for="course in coursesConsideredDisplay"
-        :key="course.courseCode"
-        :content="`Mark: ${course.mark}, GPA: ${course.numberGrade}`"
-        placement="top"
-      >
-        <el-button>{{ course.courseCode }}</el-button>
-      </el-tooltip>
+      <CourseTagList :courses2display="courses2display" />
     </div>
   </div>
 </template>
@@ -67,13 +24,14 @@ import { Courses, DeptCountType } from '../../core/types';
 import { Course } from '../../core/lib';
 import { mapGetters } from 'vuex';
 import { calCoursesWeightSum, round } from '../../core/utils';
-
+import DeptTable from '../components/DeptTable.vue';
+import CourseTagList from '../components/CourseTagList.vue';
 export default defineComponent({
   name: 'Home',
-  components: {},
+  components: { DeptTable, CourseTagList },
   data() {
     return {
-      coursesConsideredDisplay: [] as Courses,
+      courses2display: [] as Courses,
     };
   },
   computed: {
@@ -86,16 +44,6 @@ export default defineComponent({
       'gpaByDept',
       'parsed',
     ]),
-    deptData() {
-      return Object.entries(this.gpaByDept as DeptCountType).map(([dept, value]) => {
-        return {
-          dept,
-          gpaAvg: round(value.gpaAvg, 2),
-          markAvg: round(value.markAvg, 2),
-          numCourses: value.courseCodes.length,
-        };
-      });
-    },
     weightSum() {
       return calCoursesWeightSum(this.uniqueCourses);
     },
@@ -111,22 +59,22 @@ export default defineComponent({
   },
   watch: {
     parsed: function (val) {
-      this.coursesConsideredDisplay = !val ? [] : this.uniqueCourses;
+      this.courses2display = !val ? ([] as Courses) : this.uniqueCourses;
     },
   },
   mounted() {
-    this.coursesConsideredDisplay = this.uniqueCourses; // init display
+    this.courses2display = this.uniqueCourses; // init display
     setTimeout(() => {
-      this.coursesConsideredDisplay = this.uniqueCourses; // init display
+      this.courses2display = this.uniqueCourses; // init display
     }, 500);
   },
   methods: {
     select(courses: Courses) {
-      this.coursesConsideredDisplay = courses;
+      this.courses2display = courses;
     },
     cellClick(row: any, column: any, cell: any, event: any) {
       const courseCodeSet = new Set(this.gpaByDept[row.dept].courseCodes);
-      this.coursesConsideredDisplay = this.uniqueCourses.filter((course: Course) =>
+      this.courses2display = this.uniqueCourses.filter((course: Course) =>
         courseCodeSet.has(course.courseCode)
       );
     },
@@ -140,7 +88,7 @@ export default defineComponent({
     margin: 0.3em;
   }
   .table-container {
-    width: 30em;
+    width: 40em;
   }
 }
 </style>
