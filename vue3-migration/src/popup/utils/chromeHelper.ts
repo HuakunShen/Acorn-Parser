@@ -70,3 +70,14 @@ export const clickCompleteHistory = (callback?: (bool) => void) => {
     });
   }
 };
+
+export const clearChromeStorage = (callback?: (bool) => void) => {
+  if (!chrome || !chrome.tabs || !chrome.tabs.query) {
+    warn('chrome ext not available');
+    callback(false);
+  } else {
+    chrome?.storage?.local?.set({ history: null, parsed: false }, () => {
+      callback(true);
+    });
+  }
+};

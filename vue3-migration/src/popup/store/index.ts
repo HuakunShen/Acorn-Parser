@@ -3,6 +3,7 @@ import { getSampleData } from '../../core/sample';
 import { AcademicHistory, Course } from '../../core/lib';
 import { DeptCountType, Courses, ParseTableResponse } from '../../core/types';
 import { log, warn } from '../../core/utils';
+import { clearChromeStorage } from '../utils/chromeHelper';
 import {
   checkOnAcademicHistory,
   checkOnCompleteAcademicHistory,
@@ -43,10 +44,10 @@ export default createStore({
   },
   actions: {
     initAH({ commit }): void {
-      console.log('initAH');
       if (!chrome || !chrome.tabs || !chrome.tabs.query) {
         warn('chrome ext not available, sample data will be used');
         commit('setAcademicHistory', getSampleData());
+        commit('setParsed', true);
       } else {
         chrome.storage.local.get(['history', 'parsed'], function (result) {
           const ah = result.history
@@ -63,6 +64,13 @@ export default createStore({
       });
       checkOnCompleteAcademicHistory((res) => {
         commit('setOnCompleteAcademicHistoryPage', res);
+      });
+    },
+    clearHistory({ commit }): void {
+      commit('setParsed', false);
+      commit('setAcademicHistory', new AcademicHistory([]));
+      clearChromeStorage((res) => {
+        res ? log('chrome storage cleared') : warn('chrome storage fail to clear');
       });
     },
   },

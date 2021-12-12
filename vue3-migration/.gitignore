@@ -4,4 +4,3 @@ src/**/*.js
 src/**/*.js.map
 dist/popup
 dist/*.js
-dist/content.js

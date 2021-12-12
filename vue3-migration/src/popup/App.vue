@@ -4,8 +4,18 @@
     <router-link class="link" to="/custom">Custom</router-link> |
     <router-link class="link" to="/about">About</router-link>
     <div class="direct-btn-group">
-      <el-button class="direct-btns m-1" size="mini" type="success" @click="parse" round
+      <el-button
+        v-show="onCompleteAcademicHistoryPage"
+        class="direct-btns m-1"
+        size="mini"
+        type="success"
+        @click="parse"
+        round
         >Parse</el-button
+      >
+
+      <el-button class="direct-btns m-1" size="mini" type="danger" @click="clearHistory" round
+        >Clear</el-button
       >
       <br />
       <el-button
@@ -39,7 +49,7 @@ export default {
     return { academicPageUrl };
   },
   methods: {
-    ...mapActions(['initAH', 'updatePageStatus']),
+    ...mapActions(['initAH', 'updatePageStatus', 'clearHistory']),
     parse() {
       if (!this.onCompleteAcademicHistoryPage) {
         alert('You have to be on the complete academic history page first before running parse');

@@ -115,6 +115,16 @@ export default defineComponent({
       return round(this.academicHistory.getNumberCGPA(), 2);
     },
   },
+  watch: {
+    parsed: function (val) {
+      console.log(`parsed changed to ${val}`);
+      if (val === false) {
+        this.coursesConsideredDisplay = [];
+      } else {
+        this.coursesConsideredDisplay = this.uniqueCourses;
+      }
+    },
+  },
   mounted() {
     this.coursesConsideredDisplay = this.uniqueCourses; // init display
     setTimeout(() => {
