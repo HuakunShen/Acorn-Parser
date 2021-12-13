@@ -1,24 +1,12 @@
-# acornparser
+# Acorn Parser
 
-## Project setup
-```
+```bash
 npm install
+npm run serve           # start popup dev server
+npm run build           # product production build in dist
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Production Build in `dist`.
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+![example workflow](https://github.com/HuakunShen/Acorn-Parser/actions/workflows/test-build.yml/badge.svg)
