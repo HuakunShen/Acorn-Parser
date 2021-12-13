@@ -84,6 +84,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .home {
+  text-align: center;
+
   .course-code-tooltip {
     margin: 0.3em;
   }

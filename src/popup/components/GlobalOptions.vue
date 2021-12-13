@@ -114,3 +114,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.global-options {
+  text-align: center;
+}
+</style>
