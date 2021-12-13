@@ -19,6 +19,9 @@
         round
         >Go To Complete History</el-button
       >
+      <el-button size="mini" class="m-1" type="info" @click="toToOptions()" round
+        >Go To Full Screen Page</el-button
+      >
     </div>
     <div><Download /></div>
     <div>
@@ -50,6 +53,7 @@ import {
   updateTabUrl,
   clickCompleteHistory,
   getCurrentTabURL,
+  toToOptions,
 } from '../utils/chromeHelper';
 import { academicPageUrl } from '../../core/constants';
 import { ErrorType } from '../../core/types';
@@ -80,6 +84,9 @@ export default {
         });
       }
       this.updatePageStatus();
+    },
+    toToOptions() {
+      toToOptions();
     },
     goToUrl(url: string) {
       getCurrentTabURL()

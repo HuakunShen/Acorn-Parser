@@ -1,7 +1,7 @@
 import { log, warn } from '../../core/utils';
 import { ParseTableResponse, ErrorType } from '../../core/types';
 import { AcademicHistory } from '../../core/lib';
-import { academicPageUrl } from '../../core/constants';
+import { academicPageUrl, optionsURL } from '../../core/constants';
 
 export const chromeExists = (): boolean => {
   return chrome != undefined && chrome.tabs != undefined && chrome.storage != undefined;
@@ -30,6 +30,10 @@ export const executeParse = (callback: () => void) => {
 export const newTab = (url: string): void => {
   if (!chromeExists()) console.warn('Chrome Not Available, Cannot Create New Tab');
   chrome?.tabs?.create({ url });
+};
+
+export const toToOptions = (): void => {
+  newTab(optionsURL);
 };
 
 export const updateTabUrl = (url: string): void => {
