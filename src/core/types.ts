@@ -54,3 +54,11 @@ export type ErrorType = {
   message: string;
   data: any;
 };
+
+export type DeptTableRow = {
+  dept: string;
+  gpaAvg: number;
+  markAvg: number;
+  numCourses: number;
+  weight: number;
+};

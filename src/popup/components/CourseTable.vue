@@ -1,10 +1,11 @@
 <template>
   <el-table
     ref="multipleTable"
+    @cell-click="cellClick"
     :data="data"
     @selection-change="handleSelectionChange"
-    :size="small"
-    fit="false"
+    size="mini"
+    :fit="false"
   >
     <el-table-column type="selection" />
     <el-table-column
@@ -15,13 +16,7 @@
       align="center"
       header-align="center"
     />
-    <el-table-column
-      property="mark"
-      sortable
-      label="Mark"
-      align="center"
-      header-align="center"
-    />
+    <el-table-column property="mark" sortable label="Mark" align="center" header-align="center" />
     <el-table-column
       property="numberGrade"
       sortable
@@ -40,16 +35,21 @@
     <el-table-column property="opt" label="Opt" align="center" />
   </el-table>
 </template>
-<script>
+<script lang="ts">
+import { DeptCountType } from '../../core/types';
+
 export default {
   props: {
     data: {
-      default: [],
+      default: [] as DeptCountType[],
     },
   },
   methods: {
-    handleSelectionChange(val) {
-      this.$emit('selectionChange', val);
+    handleSelectionChange(row: DeptCountType): void {
+      this.$emit('selectionChange', row);
+    },
+    cellClick(row: any, column: any, cell: HTMLElement, event: any): void {
+      (this.$refs.multipleTable as any).toggleRowSelection(row);
     },
   },
 };

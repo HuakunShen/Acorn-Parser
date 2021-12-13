@@ -39,13 +39,13 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
-import { DeptCountType } from '../../core/types';
+import { DeptCountType, DeptTableRow } from '../../core/types';
 import { round } from '../../core/utils';
 
 export default {
   computed: {
     ...mapGetters(['gpaByDept']),
-    deptData() {
+    deptData(): DeptTableRow[] {
       return Object.entries(this.gpaByDept as DeptCountType).map(([dept, value]) => {
         return {
           dept,
@@ -58,7 +58,7 @@ export default {
     },
   },
   methods: {
-    cellClick(row: any, column: any, cell: any, event: any) {
+    cellClick(row: any, column: any, cell: HTMLElement, event: any) {
       this.$emit('cellClick', row, column, cell, event);
     },
   },

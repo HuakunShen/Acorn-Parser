@@ -44,16 +44,16 @@ export default defineComponent({
       'gpaByDept',
       'parsed',
     ]),
-    weightSum() {
+    weightSum(): number {
       return calCoursesWeightSum(this.uniqueCourses);
     },
-    weightSumDone() {
+    weightSumDone(): number {
       return calCoursesWeightSum(this.finishedUniqueCourses);
     },
-    avgMark() {
+    avgMark(): number {
       return round(this.academicHistory.getAvgMark(), 2);
     },
-    cgpa() {
+    cgpa(): number {
       return round(this.academicHistory.getNumberCGPA(), 2);
     },
   },
@@ -72,7 +72,7 @@ export default defineComponent({
     select(courses: Courses) {
       this.courses2display = courses;
     },
-    cellClick(row: any, column: any, cell: any, event: any) {
+    cellClick(row: any, column: any, cell: HTMLElement, event: any) {
       const courseCodeSet = new Set(this.gpaByDept[row.dept].courseCodes);
       this.courses2display = this.uniqueCourses.filter((course: Course) =>
         courseCodeSet.has(course.courseCode)
