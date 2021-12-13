@@ -1,10 +1,10 @@
 <template>
-  <el-dropdown size="mini" split-button type="primary">
+  <el-dropdown size="mini" @click="downloadJson" split-button type="primary">
     Download
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item @click="downloadJson">json</el-dropdown-item>
-        <el-dropdown-item @click="downloadCSV">csv</el-dropdown-item>
+        <el-dropdown-item @click="downloadJson">Download json</el-dropdown-item>
+        <el-dropdown-item @click="downloadCSV">Download csv</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -42,7 +42,6 @@ export default {
         return [c.courseCode, mark, numberGrade, numberCourseAvg, c.complete.toString()];
       });
       const data = headerStr + '\n' + csvData.map((row: string[]) => row.join(',')).join('\n');
-      console.log(data);
       const csvBlob = URL.createObjectURL(
         new Blob([data], {
           type: 'text/json',
