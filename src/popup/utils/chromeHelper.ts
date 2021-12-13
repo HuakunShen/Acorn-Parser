@@ -1,5 +1,5 @@
 import { log, warn } from '../../core/utils';
-import { ParseTableResponse } from '../../core/types';
+import { ParseTableResponse, ErrorType } from '../../core/types';
 import { AcademicHistory } from '../../core/lib';
 import { academicPageUrl } from '../../core/constants';
 
@@ -30,6 +30,24 @@ export const executeParse = (callback: () => void) => {
 export const newTab = (url: string): void => {
   if (!chromeExists()) console.warn('Chrome Not Available, Cannot Create New Tab');
   chrome?.tabs?.create({ url });
+};
+
+export const updateTabUrl = (url: string): void => {
+  if (!chromeExists()) console.warn('Chrome Not Available, Cannot Change Tag URL');
+  chrome?.tabs?.update(undefined, { url });
+};
+
+export const getCurrentTabURL = () => {
+  return new Promise<string>((resolve, reject) => {
+    if (!chromeExists()) {
+      const message = 'Chrome Not Available, Cannot Get Current URL';
+      reject({ message } as ErrorType);
+    } else {
+      chrome?.tabs?.query({ currentWindow: true, active: true }, function (tabs) {
+        resolve(tabs[0].url);
+      });
+    }
+  });
 };
 
 export const checkOnAcademicHistory = (callback: (bool) => void) => {

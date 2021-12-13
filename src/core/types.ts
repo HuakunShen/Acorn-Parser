@@ -49,3 +49,8 @@ export type ParseTableResponse = {
   message: string;
   data: AcademicHistory | null;
 };
+
+export type ErrorType = {
+  message: string;
+  data: any;
+};

@@ -10,7 +10,7 @@
         class="m-1"
         v-show="!onAcademicHistoryPage"
         type="success"
-        @click="newTab(academicPageUrl)"
+        @click="goToUrl(academicPageUrl)"
         round
         >Go To Academic History</el-button
       >
@@ -48,8 +48,15 @@
 </template>
 <script lang="ts">
 import { mapActions, mapGetters } from 'vuex';
-import { executeParse, newTab, clickCompleteHistory } from './utils/chromeHelper';
+import {
+  executeParse,
+  newTab,
+  updateTabUrl,
+  clickCompleteHistory,
+  getCurrentTabURL,
+} from './utils/chromeHelper';
 import { academicPageUrl } from '../core/constants';
+import { ErrorType } from '../core/types';
 import Download from './components/Download.vue';
 export default {
   data: () => {
@@ -67,8 +74,20 @@ export default {
       }
       this.updatePageStatus();
     },
-    newTab(url: string) {
-      newTab(url);
+    goToUrl(url: string) {
+      getCurrentTabURL()
+        .then((curURL: string) => {
+          if (curURL.includes('acorn.utoronto.ca')) {
+            updateTabUrl(url);
+            setTimeout(() => this.updatePageStatus(), 1000);
+          } else {
+            newTab(url);
+          }
+        })
+        .catch((err: ErrorType) => {
+          console.error('cannot go to url');
+          console.error(err);
+        });
     },
     clickCompleteHistory() {
       clickCompleteHistory((res: boolean) => {
