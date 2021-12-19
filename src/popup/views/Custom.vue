@@ -11,10 +11,10 @@
 </template>
 
 <script lang="js">
-import { log, getColumnHeaderInfo, sessionTableStr2Obj, calAvgCoursesWeightedGPA, calAvgCoursesWeightedMark } from '../../core/utils';
-import {getSampleData} from '../../core/sample'
-import { AcademicHistory, Semester, Course } from '../../core/lib';
-import CourseTable from '../components/CourseTable'
+import { log, getColumnHeaderInfo, sessionTableStr2Obj, calAvgCoursesWeightedGPA, calAvgCoursesWeightedMark } from '@/core/utils';
+import {getSampleData} from '@/core/sample'
+import { AcademicHistory, Semester, Course } from '@/core/lib';
+import CourseTable from '@/popup/components/CourseTable'
 
 export default {
   data() {

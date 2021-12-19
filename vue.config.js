@@ -1,11 +1,14 @@
+const path = require('path');
+
 module.exports = {
   publicPath: '',
   outputDir: 'dist/popup',
-  //   pages: {
-  //     popup: {
-  //       entry: 'src/popup/main.ts',
-  //       template: 'public/index.html',
-  //       filename: 'index.html',
-  //     },
-  //   },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+      extensions: ['.js', '.vue', '.json'],
+    },
+  },
 };
