@@ -8,7 +8,7 @@
   </div>
 </template>
 <script lang="ts">
-import GlobalOptions from '@/popup/components/GlobalOptions.vue';
+import GlobalOptions from '@/ui/components/GlobalOptions.vue';
 export default {
   components: {
     GlobalOptions,

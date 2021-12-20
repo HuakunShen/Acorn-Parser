@@ -46,6 +46,7 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import {
   executeParse,
@@ -54,12 +55,12 @@ import {
   clickCompleteHistory,
   getCurrentTabURL,
   toToOptions,
-} from '../utils/chromeHelper';
-import { academicPageUrl } from '../../core/constants';
-import { ErrorType } from '../../core/types';
-import Download from '../components/Download.vue';
+} from '@/ui/utils/chromeHelper';
+import { academicPageUrl } from '@/core/constants';
+import { ErrorType } from '@/core/types';
+import Download from '@/ui/components/Download.vue';
 
-export default {
+export default defineComponent({
   data: () => {
     return { academicPageUrl };
   },
@@ -112,7 +113,7 @@ export default {
       });
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

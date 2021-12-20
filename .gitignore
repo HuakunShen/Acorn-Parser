@@ -1,16 +1,8 @@
-dist/**/*.js
-dist/**/*.js.map
-src/**/*.js
-src/**/*.js.map
-dist/popup
-dist/*.js
-node_modules
-
-
 .DS_Store
-/dist
-!dist/lib
-!dist/images
+node_modules
+dist/*
+!dist/manifest.json
+
 
 # local env files
 .env.local

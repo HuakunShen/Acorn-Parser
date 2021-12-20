@@ -1,7 +1,7 @@
-import { log, warn } from '../../core/utils';
-import { ParseTableResponse, ErrorType } from '../../core/types';
-import { AcademicHistory } from '../../core/lib';
-import { academicPageUrl, optionsURL } from '../../core/constants';
+import { log, warn } from '@/core/utils';
+import { ParseTableResponse, ErrorType } from '@/core/types';
+import { AcademicHistory } from '@/core/lib';
+import { academicPageUrl, optionsURL } from '@/core/constants';
 
 export const chromeExists = (): boolean => {
   return chrome != undefined && chrome.tabs != undefined && chrome.storage != undefined;
@@ -15,8 +15,8 @@ export const executeParse = (callback: () => void) => {
     warn('Chrome Not Available, cannot parse page');
   } else {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, 'parse', (res: ParseTableResponse) => {
-        const academicHistory = new AcademicHistory(res.data.semesters);
+      chrome.tabs.sendMessage(tabs[0].id as number, 'parse', (res: ParseTableResponse) => {
+        const academicHistory = new AcademicHistory((res.data as AcademicHistory)?.semesters);
         chrome.storage.local.set({ history: academicHistory, parsed: true }, () => {
           const error = chrome.runtime.lastError;
           if (error) alert(error);
@@ -38,7 +38,9 @@ export const toToOptions = (): void => {
 
 export const updateTabUrl = (url: string): void => {
   if (!chromeExists()) console.warn('Chrome Not Available, Cannot Change Tag URL');
-  chrome?.tabs?.update(undefined, { url });
+  chrome.tabs.getCurrent(function (tab) {
+    tab && tab.id && chrome.tabs.update(tab.id, { url });
+  });
 };
 
 export const getCurrentTabURL = () => {
@@ -48,13 +50,13 @@ export const getCurrentTabURL = () => {
       reject({ message } as ErrorType);
     } else {
       chrome?.tabs?.query({ currentWindow: true, active: true }, function (tabs) {
-        resolve(tabs[0].url);
+        resolve(tabs[0].url as string);
       });
     }
   });
 };
 
-export const checkOnAcademicHistory = (callback: (bool) => void) => {
+export const checkOnAcademicHistory = (callback: (isAcademicHistory: boolean) => void) => {
   if (!chromeExists()) {
     warn('Chrome Not Available, Cannot Check if you are on Academic History Page');
     callback(false);
@@ -65,7 +67,7 @@ export const checkOnAcademicHistory = (callback: (bool) => void) => {
   }
 };
 
-export const checkOnCompleteAcademicHistory = (callback: (bool) => void) => {
+export const checkOnCompleteAcademicHistory = (callback: (isOnComplete: boolean) => void) => {
   if (!chromeExists()) {
     warn('Chrome Not Available, Cannot Check if you are on Complete Academic History Page');
     callback(false);
@@ -75,35 +77,53 @@ export const checkOnCompleteAcademicHistory = (callback: (bool) => void) => {
         callback(false);
       } else {
         chrome?.tabs?.query({ currentWindow: true, active: true }, (tabs) => {
-          chrome.tabs.sendMessage(tabs[0].id, 'check_if_in_complete', (result: boolean) => {
-            callback(result);
-          });
+          chrome.tabs.sendMessage(
+            tabs[0].id as number,
+            'check_if_in_complete',
+            (result: boolean) => {
+              callback(result);
+            }
+          );
         });
       }
     });
   }
 };
 
-export const clickCompleteHistory = (callback?: (bool) => void) => {
+export const clickCompleteHistory = (callback?: (success: boolean) => void) => {
   if (!chromeExists()) {
     warn('Chrome Not Available, cannot click complete history button');
-    callback(false);
+    if (callback) callback(false);
   } else {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, 'click_complete', () => {
-        callback(true);
+      chrome.tabs.sendMessage(tabs[0].id as number, 'click_complete', () => {
+        if (callback) callback(true);
       });
     });
   }
 };
 
-export const clearChromeStorage = (callback?: (bool) => void) => {
+export const clearChromeStorage = (callback?: (success: boolean) => void) => {
   if (!chromeExists()) {
     warn('Chrome Not Available, cannot clear chrome storage');
-    callback(false);
+    if (callback) callback(false);
   } else {
     chrome?.storage?.local?.set({ history: null, parsed: false }, () => {
-      callback(true);
+      if (callback) callback(true);
     });
   }
+};
+
+export const chromeDownload = (
+  url: string,
+  filename: string,
+  conflictAction: chrome.downloads.FilenameConflictAction = 'overwrite',
+  saveAs: boolean
+): void => {
+  chrome?.downloads?.download({
+    url,
+    filename,
+    conflictAction,
+    saveAs,
+  });
 };

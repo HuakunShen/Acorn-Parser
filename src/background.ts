@@ -1,6 +1,3 @@
-// import { Semester, AcademicHistory } from './core/lib';
-// import { log, warn, error } from './core/utils';
-
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ history: null, parsed: false }, () => {});
 });

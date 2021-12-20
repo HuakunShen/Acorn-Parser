@@ -39,10 +39,11 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
-import { DeptCountType, DeptTableRow } from '../../core/types';
-import { round } from '../../core/utils';
+import { DeptCountType, DeptTableRow } from '@/core/types';
+import { round } from '@/core/utils';
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   computed: {
     ...mapGetters(['gpaByDept']),
     deptData(): DeptTableRow[] {
@@ -62,5 +63,5 @@ export default {
       this.$emit('cellClick', row, column, cell, event);
     },
   },
-};
+});
 </script>

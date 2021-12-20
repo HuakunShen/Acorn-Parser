@@ -12,25 +12,22 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
-import { Courses } from '../../core/types';
-import { Course } from '../../core/lib';
-export default {
+import { Courses } from '@/core/types';
+import { Course } from '@/core/lib';
+import { defineComponent } from 'vue';
+import { chromeDownload } from '@/ui/utils/chromeHelper';
+
+export default defineComponent({
   computed: {
     ...mapGetters(['academicHistory']),
   },
   methods: {
     downloadJson() {
-      const json_file = URL.createObjectURL(
-        new Blob([JSON.stringify(this.academicHistory, null, 2)], {
-          type: 'application/json',
-        })
-      );
-      chrome.downloads.download({
-        url: json_file,
-        filename: 'academic_history.json',
-        conflictAction: 'overwrite',
-        saveAs: true,
+      const jsonBlob = new Blob([JSON.stringify(this.academicHistory, null, 2)], {
+        type: 'application/json',
       });
+      const jsonFile = URL.createObjectURL(jsonBlob);
+      chromeDownload(jsonFile, 'academic_history.json', 'overwrite', true);
     },
     downloadCSV() {
       const allCourses: Courses = this.academicHistory.getAllCourses();
@@ -47,13 +44,8 @@ export default {
           type: 'text/json',
         })
       );
-      chrome.downloads.download({
-        url: csvBlob,
-        filename: 'academic_history.csv',
-        conflictAction: 'overwrite',
-        saveAs: true,
-      });
+      chromeDownload(csvBlob, 'academic_history.csv', 'overwrite', true);
     },
   },
-};
+});
 </script>

@@ -1,14 +1,15 @@
 import { createStore } from 'vuex';
-import { getSampleData } from '../../core/sample';
-import { AcademicHistory, Course } from '../../core/lib';
-import { DeptCountType, Courses, ParseTableResponse } from '../../core/types';
-import { log, warn } from '../../core/utils';
-import { clearChromeStorage } from '../utils/chromeHelper';
+import { getSampleData } from '@/core/sample';
+import { AcademicHistory, Course } from '@/core/lib';
+import { DeptCountType, Courses, ParseTableResponse } from '@/core/types';
+import { log, warn } from '@/core/utils';
+import { clearChromeStorage } from '@/ui/utils/chromeHelper';
 import {
   checkOnAcademicHistory,
   checkOnCompleteAcademicHistory,
   clickCompleteHistory,
-} from '../utils/chromeHelper';
+} from '@/ui/utils/chromeHelper';
+
 export default createStore({
   state: {
     academicHistory: new AcademicHistory([]),

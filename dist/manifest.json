@@ -15,7 +15,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["downloads", "storage", "tabs", "unlimitedStorage"],
+  "permissions": ["downloads", "storage", "tabs"],
   "action": {
     "default_popup": "popup/index.html"
   },

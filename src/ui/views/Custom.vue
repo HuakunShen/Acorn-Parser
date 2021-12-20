@@ -14,7 +14,7 @@
 import { log, getColumnHeaderInfo, sessionTableStr2Obj, calAvgCoursesWeightedGPA, calAvgCoursesWeightedMark } from '@/core/utils';
 import {getSampleData} from '@/core/sample'
 import { AcademicHistory, Semester, Course } from '@/core/lib';
-import CourseTable from '@/popup/components/CourseTable'
+import CourseTable from '@/ui/components/CourseTable'
 
 export default {
   data() {

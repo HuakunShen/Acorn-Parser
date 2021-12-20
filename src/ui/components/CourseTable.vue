@@ -36,9 +36,10 @@
   </el-table>
 </template>
 <script lang="ts">
-import { DeptCountType } from '../../core/types';
+import { DeptCountType } from '@/core/types';
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   props: {
     data: {
       default: [] as DeptCountType[],
@@ -52,5 +53,5 @@ export default {
       (this.$refs.multipleTable as any).toggleRowSelection(row);
     },
   },
-};
+});
 </script>

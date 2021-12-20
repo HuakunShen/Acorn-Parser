@@ -2,13 +2,9 @@
   <div class="home container">
     <h2>Summary</h2>
     <el-button @click="select(uniqueCourses)">cGPA: {{ cgpa }}</el-button>
-    <el-button @click="select(uniqueCourses)"
-      >Average Mark: {{ avgMark }}</el-button
-    >
+    <el-button @click="select(uniqueCourses)">Average Mark: {{ avgMark }}</el-button>
 
-    <el-button @click="select(uniqueCourses)"
-      >Total Credit: {{ weightSum }}</el-button
-    >
+    <el-button @click="select(uniqueCourses)">Total Credit: {{ weightSum }}</el-button>
     <el-button @click="select(finishedUniqueCourses)"
       >Total Credit Finished: {{ weightSumDone }}</el-button
     >
@@ -28,8 +24,8 @@ import { Courses, DeptCountType } from '@/core/types';
 import { Course } from '@/core/lib';
 import { mapGetters } from 'vuex';
 import { calCoursesWeightSum, round } from '@/core/utils';
-import DeptTable from '@/popup/components/DeptTable.vue';
-import CourseTagList from '@/popup/components/CourseTagList.vue';
+import DeptTable from '@/ui/components/DeptTable.vue';
+import CourseTagList from '@/ui/components/CourseTagList.vue';
 export default defineComponent({
   name: 'Home',
   components: { DeptTable, CourseTagList },
