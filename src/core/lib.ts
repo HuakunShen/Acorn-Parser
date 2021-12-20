@@ -5,8 +5,8 @@ import {
   calAvgCoursesWeightedMark,
   error,
   filterDuplicateCourses,
-} from './utils';
-import { Courses, SessionGpaHdr, DeptCountType } from './types';
+} from "./utils";
+import { Courses, SessionGpaHdr, DeptCountType } from "./types";
 
 export class Course {
   courseCode: string;
@@ -41,7 +41,7 @@ export class Course {
     return this.complete;
   }
   toConsider() {
-    return this.completed() && this.opt !== 'EXT';
+    return this.completed() && this.opt !== "EXT";
   }
   dept() {
     return this.courseCode.substring(0, 3);
@@ -60,21 +60,21 @@ export class Semester {
     this.courses = courses;
     this.sessionHdr = sessionHdr;
     this.gpaHdr = gpaHdr;
-    const [year, season] = sessionHdr.split('-')[0].trim().split(' ');
+    const [year, season] = sessionHdr.split("-")[0].trim().split(" ");
     this.year = parseInt(year);
     this.season = season;
     const gpaStrList = gpaHdr
-      .split('  ')
+      .split("  ")
       .map((x) => x.trim())
       .filter((x) => x.length !== 0);
     this.gpaSummary = {};
     let i = 0;
     while (i < gpaStrList.length) {
-      if (gpaStrList[i].includes('GPA') && i !== gpaStrList.length) {
+      if (gpaStrList[i].includes("GPA") && i !== gpaStrList.length) {
         this.gpaSummary[gpaStrList[i]] = parseFloat(gpaStrList[i + 1]);
         i++; // next value should be a GPA and is processed, skip the next
-      } else if (gpaStrList[i].includes('Status:')) {
-        this.gpaSummary.Status = gpaStrList[i].split(':')[1].trim();
+      } else if (gpaStrList[i].includes("Status:")) {
+        this.gpaSummary.Status = gpaStrList[i].split(":")[1].trim();
       } else {
         error(`ERROR: not handled, ${gpaStrList[i]}`);
       }
@@ -93,7 +93,9 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
+    return calCoursesWeightSum(
+      this.courses.filter((course) => course.complete)
+    );
   }
 
   getCompletedCourses(): Courses {
@@ -172,7 +174,9 @@ export class AcademicHistory {
 
   getGPAByDept(): DeptCountType {
     const completedCourses = this.getCompletedCourses();
-    const courseCodes = new Set(completedCourses.map((c: Course) => c.courseCode));
+    const courseCodes = new Set(
+      completedCourses.map((c: Course) => c.courseCode)
+    );
     const count: DeptCountType = {};
     for (const c of courseCodes) {
       const dept = c.substring(0, 3);
@@ -212,6 +216,6 @@ export class AcademicHistory {
 
   static loadFromJson(rawJson: string): AcademicHistory {
     const parsedData = JSON.parse(rawJson);
-    return AcademicHistory.loadFromJson(parsedData);
+    return AcademicHistory.loadFromJsObj(parsedData);
   }
 }
