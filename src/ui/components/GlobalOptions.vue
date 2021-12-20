@@ -90,8 +90,10 @@ export default defineComponent({
       toToOptions();
     },
     goToUrl(url: string) {
+      console.log(`goToUrl: ${url}`);
       getCurrentTabURL()
         .then((curURL: string) => {
+          console.log(curURL);
           if (curURL.includes('acorn.utoronto.ca')) {
             updateTabUrl(url);
             setTimeout(() => this.updatePageStatus(), 1000);

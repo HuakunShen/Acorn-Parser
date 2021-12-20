@@ -17,7 +17,7 @@
   },
   "permissions": ["downloads", "storage", "tabs"],
   "action": {
-    "default_popup": "popup/index.html"
+    "default_popup": "ui/popup/index.html"
   },
-  "options_page": "popup/index.html"
+  "options_page": "ui/options/index.html"
 }

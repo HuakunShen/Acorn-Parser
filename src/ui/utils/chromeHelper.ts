@@ -37,9 +37,11 @@ export const toToOptions = (): void => {
 };
 
 export const updateTabUrl = (url: string): void => {
+  console.log('updateTabUrl');
   if (!chromeExists()) console.warn('Chrome Not Available, Cannot Change Tag URL');
-  chrome.tabs.getCurrent(function (tab) {
-    tab && tab.id && chrome.tabs.update(tab.id, { url });
+  console.log('updateTabUrl2');
+  chrome?.tabs?.query({ currentWindow: true, active: true }, function (tabs) {
+    tabs[0].id && chrome?.tabs?.update(tabs[0].id, { url });
   });
 };
 
