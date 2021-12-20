@@ -1,19 +1,12 @@
-import {
-  Courses,
-  ColHeaderInfo,
-  Letter2NumGpaMap,
-  Num2LetterGpaMap,
-} from "./types";
-import { Course, Semester } from "./lib";
+import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
+import { Course, Semester } from './lib';
 
 export const log = console.log,
   error = console.error,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses
-    .map((course: Course) => course.weight)
-    .reduce((a: number, b: number) => a + b, 0);
+  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -43,18 +36,18 @@ export const calAvgCoursesWeightedGPA = (courses: Courses): number => {
  * Dictionary mapping Letter grade to GPA in number, out of 4.0
  */
 export const letter2numberGpaMap: Letter2NumGpaMap = {
-  "A+": 4.0,
+  'A+': 4.0,
   A: 4.0,
-  "A-": 3.7,
-  "B+": 3.3,
+  'A-': 3.7,
+  'B+': 3.3,
   B: 3.0,
-  "B-": 2.7,
-  "C+": 2.3,
+  'B-': 2.7,
+  'C+': 2.3,
   C: 2.0,
-  "C-": 1.7,
-  "D+": 1.3,
+  'C-': 1.7,
+  'D+': 1.3,
   D: 1.0,
-  "D-": 0.7,
+  'D-': 0.7,
   F: 0.0,
 };
 
@@ -68,7 +61,7 @@ export const number2letterGpaMap: Num2LetterGpaMap = Object.fromEntries(
 
 export const getColumnHeaderInfo = (headerStr: string): ColHeaderInfo => {
   const colNames = headerStr
-    .split("  ")
+    .split('  ')
     .map((col: string) => col.trim())
     .filter((col: string) => col.length != 0);
   const colIndices = colNames.map((col: string) => headerStr.indexOf(col));
@@ -103,8 +96,7 @@ export const filterIncompleteCourses = (courses: Courses) =>
 export const filterNotToCalculateCourses = (courses: Courses) =>
   courses.filter((c: Course) => c.toConsider());
 
-export const round = (num: number, prec: number) =>
-  Math.round(num * 10 ** prec) / 10 ** prec;
+export const round = (num: number, prec: number) => Math.round(num * 10 ** prec) / 10 ** prec;
 
 /**
  * sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
@@ -119,7 +111,7 @@ export const courseRowStr2CourseObj = (rowStr: string[]) => {
     letter2numberGpaMap[rowStr[4]],
     letter2numberGpaMap[rowStr[5]],
     rowStr[6],
-    rowStr[4] !== "IPR"
+    rowStr[4] !== 'IPR'
   );
   return courseObj;
 };
@@ -130,7 +122,7 @@ export const sessionTableStr2Obj = (
   gpaStr: string | null,
   colHeaderInfo: ColHeaderInfo
 ): Semester => {
-  const tableRows: string[] = table_str.split("\n"); // split table string
+  const tableRows: string[] = table_str.split('\n'); // split table string
   const { colIndices } = colHeaderInfo;
   // Column 2, title, can have multiple lines, need to merge the lines into a single line
   const validRowIdx: Array<number> = [];
@@ -173,8 +165,8 @@ export const sessionTableStr2Obj = (
   for (const col_list of rowList) {
     const newColList = col_list.splice(0, col_list.length - 1);
     const lastCol = col_list[col_list.length - 1];
-    const colSplit = lastCol.split("  ");
-    let [grade, opt] = [lastCol, ""];
+    const colSplit = lastCol.split('  ');
+    let [grade, opt] = [lastCol, ''];
     if (colSplit.length != 1) {
       [grade, opt] = colSplit;
       grade = grade.trim();
@@ -196,14 +188,12 @@ export const sessionTableStr2Obj = (
         letter2numberGpaMap[rowStr[4]],
         letter2numberGpaMap[rowStr[5]],
         rowStr[6],
-        rowStr[3] !== "" &&
-          rowStr[4] !== "IPR" &&
-          letter2numberGpaMap[rowStr[4]] !== undefined
+        rowStr[3] !== '' && rowStr[4] !== 'IPR' && letter2numberGpaMap[rowStr[4]] !== undefined
       )
   );
   return new Semester(
     courses,
-    sessionStr === null ? "" : sessionStr,
-    gpaStr === null ? "" : gpaStr
+    sessionStr === null ? '' : sessionStr,
+    gpaStr === null ? '' : gpaStr
   );
 };

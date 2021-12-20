@@ -1,19 +1,19 @@
-import { log, getColumnHeaderInfo, sessionTableStr2Obj } from './core/utils';
+import { getColumnHeaderInfo, sessionTableStr2Obj } from './core/utils';
 import { ParseTableResponse } from './core/types';
-// import { sampleTables, sampleGpaStr, sampleSessionStr, sampleHeaderStr } from './core/sample_data';
 import { Semester, AcademicHistory } from './core/lib';
-const is_in_complete_history = () => {
-  const is_complete_history =
+
+const isInCompleteHistory = () => {
+  const isCompleteHistory =
     document.getElementsByClassName('history-academic-complete').length === 1;
-  const is_recent_history = document.getElementsByClassName('academic-history-recent').length === 1;
-  return is_complete_history;
+  const isRecentHistory = document.getElementsByClassName('academic-history-recent').length === 1;
+  return isCompleteHistory;
 };
 
-const go_to_complete_history = () => {
-  const is_complete_history =
+const goToCompleteHistory = () => {
+  const isCompleteHistory =
     document.getElementsByClassName('history-academic-complete').length === 1;
-  const is_recent_history = document.getElementsByClassName('academic-history-recent').length === 1;
-  if (is_recent_history && !is_complete_history) {
+  const isRecentHistory = document.getElementsByClassName('academic-history-recent').length === 1;
+  if (isRecentHistory && !isCompleteHistory) {
     let ele: HTMLElement | null = document.querySelector('[data-ng-click="$ctrl.getComplete()"');
     if (ele) ele.click();
   }
@@ -22,66 +22,62 @@ const go_to_complete_history = () => {
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   switch (req) {
     case 'parse':
-      const res = parse_tables();
+      const res = parseTables();
       sendResponse(res);
       break;
     case 'click_complete':
-      go_to_complete_history();
+      goToCompleteHistory();
       sendResponse();
       break;
     case 'check_if_in_complete':
-      sendResponse(is_in_complete_history());
+      sendResponse(isInCompleteHistory());
       break;
     default:
   }
 });
 
-const parse_tables = (): ParseTableResponse => {
-  const is_recent_history = document.getElementsByClassName('academic-history-recent').length === 1;
-  const is_complete_history =
+const parseTables = (): ParseTableResponse => {
+  const isRecentHistory = document.getElementsByClassName('academic-history-recent').length === 1;
+  const isCompleteHistory =
     document.getElementsByClassName('history-academic-complete').length === 1;
-
-  if (is_recent_history) {
+  if (isRecentHistory || !isCompleteHistory) {
     return {
       success: false,
-      message: 'This is recent academic history, I parse only complete academic history.',
-      data: null,
-    };
-  } else if (is_complete_history) {
-    const tables: NodeListOf<HTMLElement> =
-      document.querySelectorAll<HTMLElement>('.courses.blok.pre-elem');
-    const semesters: Semester[] = [];
-    tables.forEach((table, idx) => {
-      const tableHdr = table?.previousElementSibling as HTMLElement;
-      const tableHdrStr = tableHdr.innerText;
-      // TODO: sessions not finished may not have this line. Fix this case
-      const sessionGPA = table?.previousElementSibling?.previousElementSibling as HTMLElement;
-      const sessionGPAStr =
-        sessionGPA.className == 'emph gpa-listing pre-elem' ? sessionGPA.innerText : null;
-      // TODO: sessions not finished may not have this line. Fix this case
-      const session: HTMLElement = sessionGPA?.previousElementSibling as HTMLElement;
-      const sessionStr = session.innerText;
-      const tableStr = table.innerText;
-      const colHeaderInfo = getColumnHeaderInfo(tableHdrStr);
-      const sessionObj: Semester = sessionTableStr2Obj(
-        tableStr,
-        sessionStr,
-        sessionGPAStr,
-        colHeaderInfo
-      );
-      semesters.push(sessionObj);
-    });
-
-    return {
-      success: true,
-      message: 'parsed',
-      data: new AcademicHistory(semesters),
-    };
-  } else {
-    return {
-      success: false,
-      message: 'No Academic History Found, please go to the correct web page and click parse.',
+      message: 'This is not complete history, I parse only complete academic history.',
       data: null,
     };
   }
+  const tables = document.querySelectorAll('.courses.blok.pre-elem');
+  const semesters: Semester[] = [];
+  Array.from(tables).map((table) => {
+    let prevEle = table.previousElementSibling;
+    let gpaStr, coursesHdrStr;
+    let limit = 0;
+    while (prevEle && !prevEle.classList.contains('sessionHeader') && limit < 5) {
+      if (prevEle.classList.contains('gpa-listing')) {
+        gpaStr = prevEle.textContent;
+      } else if (prevEle.classList.contains('coursesHeader')) {
+        coursesHdrStr = prevEle.textContent;
+      }
+      prevEle = prevEle.previousElementSibling;
+      if (limit === 5) alert('loop limit exceeded');
+      limit += 1; // prevent infinite loop just in case, there should not be infinite loop
+    }
+    const sessionHdrStr = prevEle ? prevEle.textContent : null;
+    if (coursesHdrStr && table.textContent) {
+      const colHeaderInfo = getColumnHeaderInfo(coursesHdrStr);
+      const sessionObj: Semester = sessionTableStr2Obj(
+        table.textContent,
+        sessionHdrStr,
+        gpaStr ? gpaStr : null,
+        colHeaderInfo
+      );
+      semesters.push(sessionObj);
+    }
+  });
+  return {
+    success: true,
+    message: 'parsed',
+    data: new AcademicHistory(semesters),
+  };
 };
