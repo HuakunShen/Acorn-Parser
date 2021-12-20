@@ -5,7 +5,7 @@
       effect="dark"
       v-for="course in courses2display"
       :key="course.courseCode"
-      :content="`Mark: ${course.mark}, GPA: ${course.numberGrade}`"
+      :content="`Mark: ${course.mark ? course.mark : 'CR'}, GPA: ${course.numberGrade ? course.numberGrade : 'N/A'}`"
       placement="top"
     >
       <el-button>{{ course.courseCode }}</el-button>
