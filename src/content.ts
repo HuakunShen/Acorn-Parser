@@ -3,14 +3,16 @@ import { ParseTableResponse } from './core/types';
 // import { sampleTables, sampleGpaStr, sampleSessionStr, sampleHeaderStr } from './core/sample_data';
 import { Semester, AcademicHistory } from './core/lib';
 const is_in_complete_history = () => {
-  const is_complete_history = $('.history-academic-complete').length === 1;
-  const is_recent_history = $('.academic-history-recent').length === 1;
+  const is_complete_history =
+    document.getElementsByClassName('history-academic-complete').length === 1;
+  const is_recent_history = document.getElementsByClassName('academic-history-recent').length === 1;
   return is_complete_history;
 };
 
 const go_to_complete_history = () => {
-  const is_complete_history = $('.history-academic-complete').length === 1;
-  const is_recent_history = $('.academic-history-recent').length === 1;
+  const is_complete_history =
+    document.getElementsByClassName('history-academic-complete').length === 1;
+  const is_recent_history = document.getElementsByClassName('academic-history-recent').length === 1;
   if (is_recent_history && !is_complete_history) {
     let ele: HTMLElement | null = document.querySelector('[data-ng-click="$ctrl.getComplete()"');
     if (ele) ele.click();
@@ -35,11 +37,11 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
 });
 
 const parse_tables = (): ParseTableResponse => {
-  const is_recent_history = $('.academic-history-recent').length === 1;
-  const is_complete_history = $('.history-academic-complete').length === 1;
+  const is_recent_history = document.getElementsByClassName('academic-history-recent').length === 1;
+  const is_complete_history =
+    document.getElementsByClassName('history-academic-complete').length === 1;
 
   if (is_recent_history) {
-    const tables = $('[data-ng-repeat="session in $ctrl.data.academicData"]');
     return {
       success: false,
       message: 'This is recent academic history, I parse only complete academic history.',

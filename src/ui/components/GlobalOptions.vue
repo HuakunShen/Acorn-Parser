@@ -23,7 +23,6 @@
         >Go To Full Screen Page</el-button
       >
     </div>
-    <div><Download /></div>
     <div>
       <el-button
         v-show="onCompleteAcademicHistoryPage"
@@ -39,6 +38,7 @@
       >
       <el-button class="m-1" size="mini" type="danger" @click="clearHistory" round>Clear</el-button>
     </div>
+    <div><Download /></div>
     <div>
       <el-tag size="mini">Parsed: {{ parsed }}</el-tag>
     </div>
