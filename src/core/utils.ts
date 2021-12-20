@@ -151,7 +151,9 @@ export const sessionTableStr2Obj = (
         // iterate columns
         const colList = rowList[i];
         for (const [col_idx, col_content] of colList.entries()) {
-          rowList[prevValidRow][col_idx] += ` ${col_content}`;
+          if (col_content) {
+            rowList[prevValidRow][col_idx] += ` ${col_content}`;
+          }
         }
       }
     }
