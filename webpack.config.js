@@ -1,25 +1,33 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-  target: 'node',
+  target: "node",
   entry: {
-    content: './src/content.ts',
-    background: './src/background.ts',
+    content: "./src/content.ts",
+    background: "./src/background.ts",
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        // use: 'ts-loader',
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: "tsconfig.webpack.json",
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "[name].js",
+    path: path.resolve(__dirname, "dist"),
   },
 };

@@ -7,9 +7,11 @@
     "serve": "npm run serve:popup",
     "serve:options": "vue-cli-service serve src/ui/options.ts",
     "build:ext": "webpack --config webpack.prod.js",
+    "build:ext:dev": "webpack --config webpack.dev.js",
     "build:options": "vue-cli-service build --dest dist/ui/options src/ui/options.ts",
     "build:popup": "vue-cli-service build --dest dist/ui/popup src/ui/popup.ts",
-    "build": "npm run build:ext && npm run build:options && npm run build:popup",
+    "build:ui": "npm run build:popup && npm run build:options",
+    "build": "npm run build:ext && npm run build:ui",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
