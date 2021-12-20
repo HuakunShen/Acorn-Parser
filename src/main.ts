@@ -18,7 +18,7 @@ const jsonStr = JSON.stringify(ah, null, 4);
 // save to fs
 // fs.writeFileSync(path.resolve("history.json"), jsonStr);
 
-let rawdata = jsonStr;
+const rawdata = jsonStr;
 // load from fs
 // let rawdata = fs.readFileSync('history.json');
 
