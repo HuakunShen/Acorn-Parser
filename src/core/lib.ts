@@ -18,6 +18,7 @@ export class Course {
   opt!: string;
   courseHdr!: string;
   complete: boolean; // complete when letterGrade !== 'IPR' and have a value
+  crncr: boolean;
   constructor(
     courseCode: string,
     title: string,
@@ -26,7 +27,8 @@ export class Course {
     numberGrade: number,
     numberCourseAvg: number,
     opt: string,
-    complete: boolean
+    complete: boolean,
+    crncr: boolean
   ) {
     this.courseCode = courseCode;
     this.title = title;
@@ -36,6 +38,7 @@ export class Course {
     this.numberCourseAvg = numberCourseAvg;
     this.opt = opt;
     this.complete = complete;
+    this.crncr = crncr;
   }
   completed() {
     return this.complete;
