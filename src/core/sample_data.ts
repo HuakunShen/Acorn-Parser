@@ -51,6 +51,10 @@ CSC494H1  Project in CSC                           0.50      IPR
           Supervised by M. Chechik                                         
 STA442H1  Methods Applied Stat                     0.50      IPR           `;
 
+export const table12 = `CIN212H1  Cinema and Sensation I                   0.50      CR     B-     
+CSC258H1  Computer Organizatn                      0.50  80  A-     A-     
+SOC100H1  Intro to Soc-Soc Perspectives            0.50      CR     C+     `;
+
 export const sampleTables = [
   table1,
   table2,
@@ -63,6 +67,7 @@ export const sampleTables = [
   table9,
   table10,
   table11,
+  table12
 ];
 
 export const sampleSessionStr =

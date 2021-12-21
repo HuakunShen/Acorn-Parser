@@ -111,7 +111,8 @@ export const courseRowStr2CourseObj = (rowStr: string[]) => {
     letter2numberGpaMap[rowStr[4]],
     letter2numberGpaMap[rowStr[5]],
     rowStr[6],
-    rowStr[4] !== 'IPR'
+    rowStr[4] !== 'IPR',
+    rowStr.includes('CR')
   );
   return courseObj;
 };
@@ -185,12 +186,13 @@ export const sessionTableStr2Obj = (
       new Course(
         rowStr[0],
         rowStr[1],
-        parseFloat(rowStr[2]),
-        parseFloat(rowStr[3]),
-        letter2numberGpaMap[rowStr[4]],
+        Number(rowStr[2]),
+        Number(rowStr[3]),
+        rowStr[4] !== 'CR' ? letter2numberGpaMap[rowStr[4]] : 0,
         letter2numberGpaMap[rowStr[5]],
         rowStr[6],
-        rowStr[3] !== '' && rowStr[4] !== 'IPR' && letter2numberGpaMap[rowStr[4]] !== undefined
+        !rowStr.includes('IPR'),
+        rowStr.includes('CR')
       )
   );
   return new Semester(
