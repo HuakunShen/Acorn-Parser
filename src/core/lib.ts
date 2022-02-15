@@ -40,7 +40,11 @@ export class Course {
   completed() {
     return this.complete;
   }
-  toConsider() {
+  /**
+   * CR, NCR, Late Withdraw, EXTRA Course will stop a course from being included in calculation
+   * @returns whether this course should be considered when calculating marks
+   */
+  toConsider(): boolean {
     return this.completed() && this.opt !== "EXT";
   }
   dept() {
@@ -93,9 +97,7 @@ export class Semester {
    * @returns total weight of completed courses
    */
   getCompletedWeight(): number {
-    return calCoursesWeightSum(
-      this.courses.filter((course) => course.complete)
-    );
+    return calCoursesWeightSum(this.courses.filter((course) => course.complete));
   }
 
   getCompletedCourses(): Courses {
@@ -174,9 +176,7 @@ export class AcademicHistory {
 
   getGPAByDept(): DeptCountType {
     const completedCourses = this.getCompletedCourses();
-    const courseCodes = new Set(
-      completedCourses.map((c: Course) => c.courseCode)
-    );
+    const courseCodes = new Set(completedCourses.map((c: Course) => c.courseCode));
     const count: DeptCountType = {};
     for (const c of courseCodes) {
       const dept = c.substring(0, 3);

@@ -1,12 +1,19 @@
-import { Courses, ColHeaderInfo, Letter2NumGpaMap, Num2LetterGpaMap } from './types';
-import { Course, Semester } from './lib';
+import {
+  Courses,
+  ColHeaderInfo,
+  Letter2NumGpaMap,
+  Num2LetterGpaMap,
+} from "./types";
+import { Course, Semester } from "./lib";
 
 export const log = console.log,
   error = console.error,
   warn = console.warn;
 
 export const calCoursesWeightSum = (courses: Courses): number => {
-  return courses.map((course: Course) => course.weight).reduce((a: number, b: number) => a + b, 0);
+  return courses
+    .map((course: Course) => course.weight)
+    .reduce((a: number, b: number) => a + b, 0);
 };
 
 export const calWeightedCoursesGPASum = (courses: Courses): number => {
@@ -96,7 +103,8 @@ export const filterIncompleteCourses = (courses: Courses) =>
 export const filterNotToCalculateCourses = (courses: Courses) =>
   courses.filter((c: Course) => c.toConsider());
 
-export const round = (num: number, prec: number) => Math.round(num * 10 ** prec) / 10 ** prec;
+export const round = (num: number, prec: number) =>
+  Math.round(num * 10 ** prec) / 10 ** prec;
 
 /**
  * sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
@@ -111,7 +119,9 @@ export const courseRowStr2CourseObj = (rowStr: string[]) => {
     letter2numberGpaMap[rowStr[4]],
     letter2numberGpaMap[rowStr[5]],
     rowStr[6],
-    rowStr[4] !== 'IPR'
+    rowStr[3] !== "" &&
+      rowStr[4] !== "IPR" &&
+      letter2numberGpaMap[rowStr[4]] !== undefined
   );
   return courseObj;
 };
@@ -180,22 +190,12 @@ export const sessionTableStr2Obj = (
   }
 
   // sample rowStr: [ 'MAT223H1', 'Linear Algebra I', '0.50', '87', 'A', 'C+', '' ]
-  const courses: Course[] = newRowList.map(
-    (rowStr: string[]) =>
-      new Course(
-        rowStr[0],
-        rowStr[1],
-        parseFloat(rowStr[2]),
-        parseFloat(rowStr[3]),
-        letter2numberGpaMap[rowStr[4]],
-        letter2numberGpaMap[rowStr[5]],
-        rowStr[6],
-        rowStr[3] !== '' && rowStr[4] !== 'IPR' && letter2numberGpaMap[rowStr[4]] !== undefined
-      )
+  const courses: Course[] = newRowList.map((rowStr: string[]) =>
+    courseRowStr2CourseObj(rowStr)
   );
   return new Semester(
     courses,
-    sessionStr === null ? '' : sessionStr,
-    gpaStr === null ? '' : gpaStr
+    sessionStr === null ? "" : sessionStr,
+    gpaStr === null ? "" : gpaStr
   );
 };
