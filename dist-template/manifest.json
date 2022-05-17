@@ -1,6 +1,6 @@
 {
   "name": "Acorn-Parser-V2",
-  "description": "A Chrome Extension Template built with TypeScript and Vue3",
+  "description": "Acorn Parser Chrome Extension",
   "version": "1.0",
   "manifest_version": 3,
   "content_scripts": [
